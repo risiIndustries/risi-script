@@ -1,4 +1,4 @@
-COMMANDS
+INPUT FUNCTIONS
 @INPUT "User input"
 @FILE start_dir prefix
 @DIRECTORY start_dir
@@ -9,6 +9,7 @@ CHECKS
 @CHECKINFILE file "string"
 @CHECKOUTPUT [command syntax] "output"
 @CHECKOUTPUTLINE int [command syntax] "output"
+@CHECKPACKAGE package_name
 
 @METADATA @@ # Follows YAML syntax
 name: "ScriptName"
@@ -17,6 +18,10 @@ dependencies:
   - package1
   - package2
 root: true
+@@
+
+@INIT @@
+INPUT FUNCTIONS
 @@
 
 @INSTALL @@ # ALSO NEEDS @REMOVE
