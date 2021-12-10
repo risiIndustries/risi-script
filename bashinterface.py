@@ -1,5 +1,6 @@
-import os
+from os import path
 import sys
 
-if sys.argv[0] == "CHECKFORFILE":
-    print(str(os.exists(sys.argv[1])).lower())
+# Code didn't work so I made it work
+if sys.argv[1] == "CHECKFORFILE":
+  print(str(path.exists(sys.argv[2])).lower())
