@@ -18,6 +18,8 @@ echo "@DIRECTORY Ran"
 simplefunctions["@CHOICE"] = """
 echo "@CHOICE Ran"
 """
+
+# Need a way to get the input and raise an error if no input is found.
 simplefunctions["@CHECKFORFILE"] = """
 python3 bashinterface.py CHECKFORFILE
 """
@@ -52,3 +54,4 @@ def compile_script(file):
             new_file.write(line + "\n")
 
 def parse(code):
+    pass # Added pass so code doesn't error.
