@@ -4,37 +4,17 @@ import os
 import subprocess
 
 # Input functions
-simplefunctions = {}
-
-simplefunctions["@INPUT"] = """
-echo "@INPUT Ran"
-"""
-simplefunctions["@FILE"] = """
-echo "@FILE Ran"
-"""
-simplefunctions["@DIRECTORY"] = """
-echo "@DIRECTORY Ran"
-"""
-simplefunctions["@CHOICE"] = """
-echo "@CHOICE Ran"
-"""
-
-# Need a way to get the input and raise an error if no input is found.
-simplefunctions["@CHECKFORFILE"] = """
-python3 bashinterface.py CHECKFORFILE
-"""
-simplefunctions["@CHECKINFILE"] = """
-echo "@CHECKINFILE Ran"
-"""
-simplefunctions["@CHECKOUTPUT"] = """
-echo "@CHECKOUTPUT Ran"
-"""
-simplefunctions["@CHECKOUTPUTLINE"] = """
-echo "@CHECKOUTPUTLINE Ran"
-"""
-simplefunctions["@CHECKPACKAGE"] = """
-echo "@CHECKPACKAGE Ran"
-"""
+simplefunctions = {
+  "@INPUT": 'echo "@INPUT Ran"',
+  "@FILE": 'echo "@FILE Ran"',
+  "@DIRECTORY": 'echo "@DIRECTORY Ran"',
+  "@CHOICE": 'echo "@CHOICE Ran"',
+  "@CHECKFORFILE": 'python3 bashinterface.py CHECKFORFILE',
+  "@CHECKINFILE": 'echo "@CHECKINFILE Ran"',
+  "@CHECKOUTPUT": 'echo "@CHECKOUTPUT Ran"',
+  "@CHECKOUTPUTLINE": 'echo "@CHECKOUTPUTLINE Ran"',
+  "@CHECKPACKAGE": 'echo "@CHECKPACKAGE Ran"'
+}
 
 complexfunctions = {}
 
