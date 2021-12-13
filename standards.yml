@@ -1,0 +1,72 @@
+metadata:
+  name: "ScriptName"
+  description: "Description of what the script does"
+  dependencies:
+    - package1
+    - package2
+  root: true
+  risiscript_version: 1
+
+install: # Requires remove function
+  bash: |
+    echo "hello world"
+  checks:
+    - CHECKFORFILE:
+      - file
+    - CHECKINFILE:
+      - file
+      - "string"
+    - CHECKOUTPUT:
+      - ["bash", "command"] # Subprocess List for Python
+      - "output"
+    - CHECKOUTPUTLINE:
+      - ["bash", "command"]
+      - "output"
+
+remove: # Requires install function
+  bash: |
+    echo "hello world" |
+  checks:
+  - CHECKFORFILE:
+    - file
+  - CHECKINFILE:
+    - file
+    - "string"
+  - CHECKOUTPUT:
+    - ["bash", "command"] # Subprocess List for Python
+    - "output"
+  - CHECKOUTPUTLINE:
+    - ["bash", "command"]
+    - "output"
+
+update: # Requires install function
+  bash: |
+    echo "hello world" |
+  checks:
+  - CHECKFORFILE:
+    - file
+  - CHECKINFILE:
+    - file
+    - "string"
+  - CHECKOUTPUT:
+    - ["bash", "command"] # Subprocess List for Python
+    - "output"
+  - CHECKOUTPUTLINE:
+    - ["bash", "command"]
+    - "output"
+
+run: # Conflicts with install function
+  bash: |
+    echo "hello world" |
+  checks:
+  - CHECKFORFILE:
+    - file
+  - CHECKINFILE:
+    - file
+    - "string"
+  - CHECKOUTPUT:
+    - ["bash", "command"] # Subprocess List for Python
+    - "output"
+  - CHECKOUTPUTLINE:
+    - ["bash", "command"]
+    - "output"
