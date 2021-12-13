@@ -75,9 +75,9 @@ def syntax_check(parsed_code):
     for item in ["run", "install", "update", "remove"]:
         if item in parsed_code.keys():
             if "bash" not in parsed_code[item]:
-                raise RisiScriptError("bash code missing from {} function".format(item))
+                raise RisiScriptError(f"bash code missing from {item} function")
             if "checks" not in parsed_code[item]:
-                raise RisiScriptError("checks missing from {} function".format(item))
+                raise RisiScriptError(f"checks missing from {item} function")
 
 
 # name: "Test Script"
