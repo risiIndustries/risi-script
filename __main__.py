@@ -65,7 +65,7 @@ def syntax_check(parsed_code):
 
     # Checking for conflicting functions
     elif "run" in parsed_code.keys() and "install" in parsed_code.keys():
-        raise RisiScriptError("file cannot contain the run and install functions")
+        raise RisiScriptError("file cannot contain both the run and install functions")
     elif "install" in parsed_code.keys() and "remove" not in parsed_code.keys():
         raise RisiScriptError("update function detected without install function")
     elif "update" in parsed_code.keys() and "install" not in parsed_code.keys():
