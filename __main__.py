@@ -65,7 +65,7 @@ def syntax_check(parsed_code):
 
     # Checking for conflicting functions
     elif "run" in parsed_code.keys() and "install" in parsed_code.keys():
-        raise RisiScriptError("file cannot contain the run and install functions")
+        raise RisiScriptError("file cannot contain both the run and install functions")
     elif "install" in parsed_code.keys() and "remove" not in parsed_code.keys():
         raise RisiScriptError("update function detected without install function")
     elif "update" in parsed_code.keys() and "install" not in parsed_code.keys():
@@ -75,9 +75,9 @@ def syntax_check(parsed_code):
     for item in ["run", "install", "update", "remove"]:
         if item in parsed_code.keys():
             if "bash" not in parsed_code[item]:
-                raise RisiScriptError("bash code missing from {} function".format(item))
+                raise RisiScriptError(f"bash code missing from {item} function")
             if "checks" not in parsed_code[item]:
-                raise RisiScriptError("checks missing from {} function".format(item))
+                raise RisiScriptError(f"checks missing from {item} function")
 
 
 # name: "Test Script"
