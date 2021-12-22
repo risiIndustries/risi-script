@@ -5,9 +5,22 @@ metadata:
     - package1
     - package2
   root: true
-  risiscript_version: 1
+  risiscript_version: 1.0
 
 install: # Requires remove function
+  init:
+    - ENTRY:
+      - "Please enter something" # Question for user
+    - FILE:
+      - "Please select a file" # Question for user
+      - "~/" # Starting dir
+      - ".txt" # ex: *.txt. Use * for any type of file
+    - DIRECTORY:
+      - "Please select a directory"  # Question for user
+      - "~/" # Starting dir
+    - CHOICE:
+      - "Please choose this" # Question for users
+      - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
@@ -24,8 +37,21 @@ install: # Requires remove function
       - "output"
 
 remove: # Requires install function
+  init:
+    - ENTRY:
+        - "Please enter something" # Question for user
+    - FILE:
+        - "Please select a file" # Question for user
+        - "~/" # Starting dir
+        - ".txt" # ex: *.txt. Use * for any type of file
+    - DIRECTORY:
+        - "Please select a directory"  # Question for user
+        - "~/" # Starting dir
+    - CHOICE:
+        - "Please choose this" # Question for users
+        - [ "Choice1", "Choice2" ] # The choices for a user to pick
   bash: |
-    echo "hello world" |
+    echo "hello world"
   checks:
   - CHECKFORFILE:
     - file
@@ -40,8 +66,25 @@ remove: # Requires install function
     - "output"
 
 update: # Requires install function
+  init:
+    - ENTRY:
+        - "var_name" # variable name for bash script
+        - "Please enter something" # Question for user
+    - FILE:
+        - "var_name" # variable name for bash script
+        - "Please select a file" # Question for user
+        - "~/" # Starting dir
+        - ".txt" # ex: *.txt. Use * for any type of file
+    - DIRECTORY:
+        - "var_name" # variable name for bash script
+        - "Please select a directory"  # Question for user
+        - "~/" # Starting dir
+    - CHOICE:
+        - "var_name" # variable name for bash script
+        - "Please choose this" # Question for users
+        - [ "Choice1", "Choice2" ] # The choices for a user to pick
   bash: |
-    echo "hello world" |
+    echo "hello world"
   checks:
   - CHECKFORFILE:
     - file
@@ -56,8 +99,21 @@ update: # Requires install function
     - "output"
 
 run: # Conflicts with install function
+  init:
+    - ENTRY:
+        - "Please enter something" # Question for user
+    - FILE:
+        - "Please select a file" # Question for user
+        - "~/" # Starting dir
+        - ".txt" # ex: *.txt. Use * for any type of file
+    - DIRECTORY:
+        - "Please select a directory"  # Question for user
+        - "~/" # Starting dir
+    - CHOICE:
+        - "Please choose this" # Question for users
+        - [ "Choice1", "Choice2" ] # The choices for a user to pick
   bash: |
-    echo "hello world" |
+    echo "hello world"
   checks:
   - CHECKFORFILE:
     - file
@@ -67,6 +123,6 @@ run: # Conflicts with install function
   - CHECKOUTPUT:
     - ["bash", "command"] # Subprocess List for Python
     - "output"
-  - CHECKOUTPUTLINE:
+  - CHECKINOUTPUT:
     - ["bash", "command"]
     - "output"
