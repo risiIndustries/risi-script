@@ -9,120 +9,132 @@ metadata:
 
 install: # Requires remove function
   init:
-    - ENTRY:
+    entry_var:
+      - ENTRY # Type of init var...
       - "Please enter something" # Question for user
-    - FILE:
+    file_var:
+      - FILE
       - "Please select a file" # Question for user
       - "~/" # Starting dir
       - ".txt" # ex: *.txt. Use * for any type of file
-    - DIRECTORY:
+    directory_var:
+      - DIRECTORY
       - "Please select a directory"  # Question for user
       - "~/" # Starting dir
-    - CHOICE:
+    choice_var:
+      - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
-    - CHECKFORFILE:
+    - FILE:
       - file
-    - CHECKINFILE:
+    - FILECONTAINS:
       - file
       - "string"
-    - CHECKOUTPUT:
+    - OUTPUT:
       - ["bash", "command"] # Subprocess List for Python
       - "output"
-    - CHECKOUTPUTLINE:
+    - INCOMMANDOUTPUT:
       - ["bash", "command"]
       - "output"
 
 remove: # Requires install function
   init:
-    - ENTRY:
-        - "Please enter something" # Question for user
-    - FILE:
-        - "Please select a file" # Question for user
-        - "~/" # Starting dir
-        - ".txt" # ex: *.txt. Use * for any type of file
-    - DIRECTORY:
-        - "Please select a directory"  # Question for user
-        - "~/" # Starting dir
-    - CHOICE:
-        - "Please choose this" # Question for users
-        - [ "Choice1", "Choice2" ] # The choices for a user to pick
+    entry_var:
+      - ENTRY # Type of init var...
+      - "Please enter something" # Question for user
+    file_var:
+      - FILE
+      - "Please select a file" # Question for user
+      - "~/" # Starting dir
+      - ".txt" # ex: *.txt. Use * for any type of file
+    directory_var:
+      - DIRECTORY
+      - "Please select a directory"  # Question for user
+      - "~/" # Starting dir
+    choice_var:
+      - CHOICE
+      - "Please choose this" # Question for users
+      - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
-  - CHECKFORFILE:
-    - file
-  - CHECKINFILE:
-    - file
-    - "string"
-  - CHECKOUTPUT:
-    - ["bash", "command"] # Subprocess List for Python
-    - "output"
-  - CHECKOUTPUTLINE:
-    - ["bash", "command"]
-    - "output"
+    - FILE:
+      - file
+    - FILECONTAINS:
+      - file
+      - "string"
+    - OUTPUT:
+      - ["bash", "command"] # Subprocess List for Python
+      - "output"
+    - INCOMMANDOUTPUT:
+      - ["bash", "command"]
+      - "output"
 
-update: # Requires install function
+update: # Requires install function, optional
   init:
-    - ENTRY:
-        - "var_name" # variable name for bash script
-        - "Please enter something" # Question for user
-    - FILE:
-        - "var_name" # variable name for bash script
-        - "Please select a file" # Question for user
-        - "~/" # Starting dir
-        - ".txt" # ex: *.txt. Use * for any type of file
-    - DIRECTORY:
-        - "var_name" # variable name for bash script
-        - "Please select a directory"  # Question for user
-        - "~/" # Starting dir
-    - CHOICE:
-        - "var_name" # variable name for bash script
-        - "Please choose this" # Question for users
-        - [ "Choice1", "Choice2" ] # The choices for a user to pick
+    entry_var:
+      - ENTRY # Type of init var...
+      - "Please enter something" # Question for user
+    file_var:
+      - FILE
+      - "Please select a file" # Question for user
+      - "~/" # Starting dir
+      - ".txt" # ex: *.txt. Use * for any type of file
+    directory_var:
+      - DIRECTORY
+      - "Please select a directory"  # Question for user
+      - "~/" # Starting dir
+    choice_var:
+      - CHOICE
+      - "Please choose this" # Question for users
+      - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
-  - CHECKFORFILE:
-    - file
-  - CHECKINFILE:
-    - file
-    - "string"
-  - CHECKOUTPUT:
-    - ["bash", "command"] # Subprocess List for Python
-    - "output"
-  - CHECKOUTPUTLINE:
-    - ["bash", "command"]
-    - "output"
+    - FILE:
+      - file
+    - FILECONTAINS:
+      - file
+      - "string"
+    - OUTPUT:
+      - ["bash", "command"] # Subprocess List for Python
+      - "output"
+    - INCOMMANDOUTPUT:
+      - ["bash", "command"]
+      - "output"
 
 run: # Conflicts with install function
   init:
-    - ENTRY:
-        - "Please enter something" # Question for user
-    - FILE:
-        - "Please select a file" # Question for user
-        - "~/" # Starting dir
-        - ".txt" # ex: *.txt. Use * for any type of file
-    - DIRECTORY:
-        - "Please select a directory"  # Question for user
-        - "~/" # Starting dir
-    - CHOICE:
-        - "Please choose this" # Question for users
-        - [ "Choice1", "Choice2" ] # The choices for a user to pick
+    entry_var:
+      - ENTRY # Type of init var...
+      - "Please enter something" # Question for user
+    file_var:
+      - FILE
+      - "Please select a file" # Question for user
+      - "~/" # Starting dir
+      - ".txt" # ex: *.txt. Use * for any type of file
+    directory_var:
+      - DIRECTORY
+      - "Please select a directory"  # Question for user
+      - "~/" # Starting dir
+    choice_var:
+      - CHOICE
+      - "Please choose this" # Question for users
+      - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
-  - CHECKFORFILE:
-    - file
-  - CHECKINFILE:
-    - file
-    - "string"
-  - CHECKOUTPUT:
-    - ["bash", "command"] # Subprocess List for Python
-    - "output"
-  - CHECKINOUTPUT:
-    - ["bash", "command"]
-    - "output"
+    - FILE:
+      - file
+    - FILECONTAINS:
+      - file
+      - "string"
+    - OUTPUT:
+      - ["bash", "command"] # Subprocess List for Python
+      - "output"
+    - INCOMMANDOUTPUT:
+      - ["bash", "command"]
+      - "output"

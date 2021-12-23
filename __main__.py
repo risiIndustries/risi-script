@@ -1,7 +1,11 @@
+import os
+
 import yaml
 import tempfile
 import subprocess
-import os
+
+newline = "\n"
+indent = "    "
 
 test = """
 metadata:
@@ -14,40 +18,46 @@ metadata:
   risiscript_version: 1
 run: # Conflicts with install function
   init:
-    - ENTRY:
-      - "var_name" # variable name for bash script
+    entry_var:
+      - ENTRY # Type of init var...
       - "Please enter something" # Question for user
-    - ENTRY:
-      - "Please enter another thing" # Question for user
-    - FILE:
+    file_var:
+      - FILE
       - "Please select a file" # Question for user
       - "~/" # Starting dir
       - ".txt" # ex: *.txt. Use * for any type of file
-    - DIRECTORY:
+    directory_var:
+      - DIRECTORY
       - "Please select a directory"  # Question for user
       - "~/" # Starting dir
-    - CHOICE:
+    choice_var:
+      - CHOICE
       - "Please choose this" # Question for users
-      - [ "Choice1", "Choice2" ] # The choices for a user to pick
+      - ["Choice1", "Choice2"] # The choices for a user to pick
   bash: |
     echo "hello world"
   checks:
-  - CHECKFORFILE:
-    - file
-  - CHECKINFILE:
-    - file
-    - "string"
-  - CHECKOUTPUT:
-    - ["bash", "command"] # Subprocess List for Python
-    - "output"
-  - CHECKINOUTPUT:
-    - ["bash", "command"]
-    - "output"
+    - CHECKFORFILE:
+      - file
+    - CHECKINFILE:
+      - file
+      - "string"
+    - CHECKOUTPUT:
+      - ["bash", "command"] # Subprocess List for Python
+      - "output"
+    - CHECKINOUTPUT:
+      - ["bash", "command"]
+      - "output"
 """
 
 
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
+    pass
+
+
+class RisiScriptFailedCheckError(Exception):
+    """Raised when a risi-script program fails a check"""
     pass
 
 
@@ -73,13 +83,95 @@ class Script:
         syntax_check(self.parsed_code)
         self.metadata = Metadata(self.parsed_code["metadata"])
         self.installation_mode = "install" in self.parsed_code
+        self.can_update = "update" in self.parsed_code
 
         self.bash_file_path = tempfile.mkstemp()[1]
-        self.bash_file = open(self.bash_file_path, "a+")
-        self.arguments = []
+
+        if self.installation_mode:
+            self.arguments = {
+                "install": self.parsed_code["install"]["init"],
+                "remove": self.parsed_code["remove"]["init"]
+            }
+            if self.can_update:
+                self.arguments["update"] = self.parsed_code["update"]["init"]
+        else:
+            self.arguments = {"run": self.parsed_code["run"]["init"]}
 
     def run(self):
-        subprocess.Popen(["bash", self.bash_file_path])
+        self.code_to_script(self)
+
+    def code_to_script(self):  # Used to create a bash script from the risi-script file
+        bash_file = open(self.bash_file_path, "a+")
+
+        if self.installation_mode:  # Checks for installation script
+            install_args = []  # Args from init function
+            remove_args = []
+            update_args = []
+
+            key_index = 2  # Set to 2 because the 1st arg is reserved for ["install", "remove", "update"]
+            for key in self.arguments["install"].keys():  # Getting variables from init function
+                install_args.append(str(key) + " = $" + str(key_index))
+                key_index += 1
+
+            key_index = 2
+            for key in self.arguments["remove"].keys():
+                remove_args.append(str(key) + " = $" + str(key_index))
+                key_index += 1
+
+            if self.can_update:
+                key_index = 2
+                for key in self.arguments["update"].keys():
+                    update_args.append(str(key) + " = $" + str(key_index))
+                    key_index += 1
+
+            file = f"""#!/bin/bash\n
+if [$1 = "install"]; then\n
+{indent_newline(indent + newline.join(install_args))}\n
+{indent_newline(indent + self.parsed_code["install"]["bash"])}\nfi\n
+if [$1 = "remove"]; then\n
+{indent_newline(indent + newline.join(remove_args))}\n
+{indent_newline(indent + self.parsed_code["remove"]["bash"])}\nfi"""
+
+            if self.can_update:
+                file = file + f"""\n\nif [$1 = "update"]; then\n
+{indent_newline(indent + newline.join(update_args))}\n
+{indent_newline(indent + self.parsed_code["update"]["bash"])}
+fi"""
+
+        else:
+            run_args = []
+            key_index = 1
+
+            for key in self.arguments["run"].keys():
+                run_args.append(str(key) + " = $" + str(key_index))
+                key_index += 1
+
+            file = f"""#!/bin/bash\n
+{newline.join(run_args)}\n
+{self.parsed_code["run"]["bash"]}"""
+
+        bash_file.write(file)
+        bash_file.close()
+
+        subprocess.call(["cat " + self.bash_file_path], shell=True)
+
+    def run_checks(self, parent):
+        for item in self.parsed_code[parent]["checks"]:  # Note: items are dicts because of yaml weirdness
+            if self.parsed_code[parent]["checks"][item][0] == "FORFILE":
+                if not os.path.isfile(self.parsed_code[parent]["checks"][item][1]):
+                    raise RisiScriptFailedCheckError(
+                        f"file {self.parsed_code[parent]['checks'][item][1]} not found"
+                    )
+            elif self.parsed_code[parent]["checks"][item][0] == "FILECONTAINS":
+                with open(self.parsed_code[parent]['checks'][item][1]) as f:
+                    if not self.parsed_code[parent]['checks'][item][2] in f.read():
+                        raise RisiScriptFailedCheckError("string {1} not found in file {2}".format(
+                            self.parsed_code[parent]['checks'][item][1],
+                            self.parsed_code[parent]['checks'][item][2]
+                        ))
+            # COMMANDOUTPUT
+            # COMMANDOUTPUTCONTAINS
+
 
     def entry_input(self, parameters):
         pass
@@ -93,33 +185,6 @@ class Script:
     def choice_input(self, parameters):
         pass
 
-    def code_to_script(self):
-        if self.installation_mode:
-            pass
-        else:
-            for item in get_init_args("run", self.parsed_code):
-                self.bash_file.write(item)
-                print(item)
-            print(self.parsed_code["run"]["bash"])
-            self.bash_file.write(self.parsed_code["run"]["bash"])
-        os.system("cat " + self.bash_file_path)
-
-        # dependencies: sudo dnf install -y []
-        # make it check for either a run, or [install, remove, update] functions, and put the code from those into the file
-
-
-def get_init_args(parent, parsed_code):
-    arg_list = []
-    arg_index = 1
-    for item in parsed_code[parent]["init"]:
-        if list(item.keys())[0] in ["ENTRY", "FILE", "DIRECTORY", "CHOICE"]:
-            arg_type = list(parsed_code[parent]["init"][0].keys())[0]
-            arg_list.append(
-                str(parsed_code[parent]["init"][0][arg_type][0]) +
-                " = $" + str(arg_index)
-            )
-            arg_index += 1
-    return arg_list
 
 def syntax_check(parsed_code):
     # Checking Metadata
@@ -151,14 +216,14 @@ def syntax_check(parsed_code):
                 raise RisiScriptError(f"bash code missing from {item} function")
             if "checks" not in parsed_code[item]:
                 raise RisiScriptError(f"checks missing from {item} function")
+            # Making sure there's no "mode" variable in inputs to prevent errors
+            if "init" in parsed_code[item] and "mode" in parsed_code[item]["init"]:
+                raise RisiScriptError(f"{item} contains \"mode\" var_name")
+
+
+def indent_newline(string):
+    return string.replace("\n", "\n    ")
+
 
 script = Script(test)
-#print(script.parsed_code)
 script.code_to_script()
-
-# name: "Test Script"
-# description: "This is a test"
-# dependencies:
-# - test_dep
-# root: false
-# risiscript_version: 1
