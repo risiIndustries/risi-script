@@ -1,3 +1,4 @@
+#!/bin/risiscript
 metadata:
   name: "ScriptName"
   description: "Description of what the script does"
