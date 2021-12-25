@@ -7,49 +7,6 @@ import subprocess
 newline = "\n"
 indent = "    "
 
-test = """
-metadata:
-  name: "ScriptName"
-  description: "Description of what the script does"
-  dependencies:
-    - package1
-    - package2
-  root: true
-  risiscript_version: 1
-run: # Conflicts with install function
-  init:
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - "~/" # Starting dir
-      - ".txt" # ex: *.txt. Use * for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-      - "~/" # Starting dir
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - ["Choice1", "Choice2"] # The choices for a user to pick
-  bash: |
-    echo "hello world"
-  checks:
-    - CHECKFORFILE:
-      - file
-    - CHECKINFILE:
-      - file
-      - "string"
-    - CHECKOUTPUT:
-      - ["bash", "command"] # Subprocess List for Python
-      - "output"
-    - CHECKINOUTPUT:
-      - ["bash", "command"]
-      - "output"
-"""
-
 
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
@@ -72,13 +29,6 @@ class Metadata:
 
 class Script:
     def __init__(self, code):
-        input_functions = {
-            "ENTRY": self.entry_input,
-            "FILE": self.file_input,
-            "DIRECTORY": self.directory_input,
-            "CHOICE": self.choice_input
-        }
-
         self.parsed_code = yaml.safe_load(code)
         syntax_check(self.parsed_code)
         self.metadata = Metadata(self.parsed_code["metadata"])
@@ -96,9 +46,6 @@ class Script:
                 self.arguments["update"] = self.parsed_code["update"]["init"]
         else:
             self.arguments = {"run": self.parsed_code["run"]["init"]}
-
-    def run(self):
-        self.code_to_script(self)
 
     def code_to_script(self):  # Used to create a bash script from the risi-script file
         bash_file = open(self.bash_file_path, "a+")
@@ -153,11 +100,9 @@ fi"""
         bash_file.write(file)
         bash_file.close()
 
-        subprocess.call(["cat " + self.bash_file_path], shell=True)
-
     def run_checks(self, parent):
         for item in self.parsed_code[parent]["checks"]:  # Note: items are dicts because of yaml weirdness
-            if self.parsed_code[parent]["checks"][item][0] == "FORFILE":
+            if self.parsed_code[parent]["checks"][item][0] == "FILE":
                 if not os.path.isfile(self.parsed_code[parent]["checks"][item][1]):
                     raise RisiScriptFailedCheckError(
                         f"file {self.parsed_code[parent]['checks'][item][1]} not found"
@@ -165,25 +110,37 @@ fi"""
             elif self.parsed_code[parent]["checks"][item][0] == "FILECONTAINS":
                 with open(self.parsed_code[parent]['checks'][item][1]) as f:
                     if not self.parsed_code[parent]['checks'][item][2] in f.read():
-                        raise RisiScriptFailedCheckError("string {1} not found in file {2}".format(
+                        raise RisiScriptFailedCheckError("string {0 not found in file {1}".format(
                             self.parsed_code[parent]['checks'][item][1],
                             self.parsed_code[parent]['checks'][item][2]
                         ))
-            # COMMANDOUTPUT
-            # COMMANDOUTPUTCONTAINS
+            elif (self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUT" or
+                  self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUTCONTAINS"):
 
-
-    def entry_input(self, parameters):
-        pass
-
-    def file_input(self, parameters):
-        pass
-
-    def directory_input(self, parameters):
-        pass
-
-    def choice_input(self, parameters):
-        pass
+                subproc = subprocess.run(
+                    self.parsed_code[parent]["checks"][item][1],
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    universal_newlines=True
+                )
+                if subproc.returncode != 0:
+                    raise RisiScriptFailedCheckError("command {0} threw error:\n{1}".format(
+                        self.parsed_code[parent]["checks"][item][1],
+                        subproc.stderr
+                    ))
+                elif (self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUT" and
+                      self.parsed_code[parent]["checks"][item][2] != subproc.stdout):
+                    raise RisiScriptFailedCheckError("string {0} doesn't match output of {1}".format(
+                        self.parsed_code[parent]["checks"][item][2],
+                        self.parsed_code[parent]["checks"][item][1]
+                    ))
+                elif (self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUTCONTAINS" or
+                      self.parsed_code[parent]["checks"][item][2] in subproc.stdout):
+                    raise RisiScriptFailedCheckError("string {0} doesn't contain output of {1}".format(
+                        self.parsed_code[parent]["checks"][item][2],
+                        self.parsed_code[parent]["checks"][item][1]
+                    ))
 
 
 def syntax_check(parsed_code):
@@ -223,7 +180,3 @@ def syntax_check(parsed_code):
 
 def indent_newline(string):
     return string.replace("\n", "\n    ")
-
-
-script = Script(test)
-script.code_to_script()

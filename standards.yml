@@ -5,6 +5,7 @@ metadata:
     - package1
     - package2
   root: true
+  one_time_use: True
   risiscript_version: 1.0
 
 install: # Requires remove function
@@ -33,11 +34,11 @@ install: # Requires remove function
     - FILECONTAINS:
       - file
       - "string"
-    - OUTPUT:
-      - ["bash", "command"] # Subprocess List for Python
+    - COMMANDOUTPUT:
+      - "bash command"
       - "output"
-    - INCOMMANDOUTPUT:
-      - ["bash", "command"]
+    - COMMANDOUTPUTCONTAINS:
+      - "bash command"
       - "output"
 
 remove: # Requires install function
@@ -66,11 +67,11 @@ remove: # Requires install function
     - FILECONTAINS:
       - file
       - "string"
-    - OUTPUT:
-      - ["bash", "command"] # Subprocess List for Python
+    - COMMANDOUTPUT:
+      - "bash command"
       - "output"
-    - INCOMMANDOUTPUT:
-      - ["bash", "command"]
+    - COMMANDOUTPUTCONTAINS:
+      - "bash command"
       - "output"
 
 update: # Requires install function, optional
@@ -99,11 +100,11 @@ update: # Requires install function, optional
     - FILECONTAINS:
       - file
       - "string"
-    - OUTPUT:
-      - ["bash", "command"] # Subprocess List for Python
+    - COMMANDOUTPUT:
+      - "bash command"
       - "output"
-    - INCOMMANDOUTPUT:
-      - ["bash", "command"]
+    - COMMANDOUTPUTCONTAINS:
+      - "bash command"
       - "output"
 
 run: # Conflicts with install function
@@ -132,9 +133,9 @@ run: # Conflicts with install function
     - FILECONTAINS:
       - file
       - "string"
-    - OUTPUT:
-      - ["bash", "command"] # Subprocess List for Python
+    - COMMANDOUTPUT:
+      - "bash command"
       - "output"
-    - INCOMMANDOUTPUT:
-      - ["bash", "command"]
+    - COMMANDOUTPUTCONTAINS:
+      - "bash command"
       - "output"
