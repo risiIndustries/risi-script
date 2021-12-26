@@ -1,6 +1,7 @@
 #!/bin/risiscript
 metadata:
   name: "ScriptName"
+  id: "scriptid"
   description: "Description of what the script does"
   dependencies:
     - package1
@@ -27,6 +28,9 @@ install: # Requires remove function
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
   bash: |
     echo "hello world"
   checks:
@@ -60,6 +64,9 @@ remove: # Requires install function
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
   bash: |
     echo "hello world"
   checks:
@@ -93,6 +100,9 @@ update: # Requires install function, optional
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
   bash: |
     echo "hello world"
   checks:
@@ -126,6 +136,9 @@ run: # Conflicts with install function
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
   bash: |
     echo "hello world"
   checks:

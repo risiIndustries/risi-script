@@ -1,0 +1,12 @@
+<schemalist>
+  <schema path="/io/risi/script/"
+         id="io.risi.script">
+    <key type="as" name="installed_scripts">
+      <default>[]</default>
+      <summary>Installation scripts that have been installed.</summary>
+      <description>
+        If script id is in this list, than it shows the remove and update buttons.
+      </description>
+    </key>
+  </schema>
+</schemalist>

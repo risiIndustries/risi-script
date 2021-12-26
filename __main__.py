@@ -2,9 +2,11 @@ import os
 import yaml
 import tempfile
 import subprocess
+from gi.repository import Gio
 
 newline = "\n"
 indent = "    "
+saved_data = Gio.Settings.new("io.risi.script")
 
 
 class RisiScriptError(Exception):
@@ -33,6 +35,7 @@ class Script:
         self.metadata = Metadata(self.parsed_code["metadata"])
         self.installation_mode = "install" in self.parsed_code
         self.can_update = "update" in self.parsed_code
+        self.installed = self.metadata.id in self.get_value("installed_scripts")
 
         self.bash_file_path = tempfile.mkstemp()[1]
 
@@ -43,6 +46,7 @@ class Script:
             }
             if self.can_update:
                 self.arguments["update"] = self.parsed_code["update"]["init"]
+
         else:
             self.arguments = {"run": self.parsed_code["run"]["init"]}
 
