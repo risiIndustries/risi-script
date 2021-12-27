@@ -18,12 +18,10 @@ install: # Requires remove function
     file_var:
       - FILE
       - "Please select a file" # Question for user
-      - "~/" # Starting dir
-      - ".txt" # ex: *.txt. Use * for any type of file
+      - ".txt" # ex: "*.txt", "filename.txt". Use "*" for any type of file
     directory_var:
       - DIRECTORY
       - "Please select a directory"  # Question for user
-      - "~/" # Starting dir
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
@@ -54,12 +52,10 @@ remove: # Requires install function
     file_var:
       - FILE
       - "Please select a file" # Question for user
-      - "~/" # Starting dir
       - ".txt" # ex: *.txt. Use * for any type of file
     directory_var:
       - DIRECTORY
       - "Please select a directory"  # Question for user
-      - "~/" # Starting dir
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
@@ -90,19 +86,17 @@ update: # Requires install function, optional
     file_var:
       - FILE
       - "Please select a file" # Question for user
-      - "~/" # Starting dir
       - ".txt" # ex: *.txt. Use * for any type of file
     directory_var:
       - DIRECTORY
       - "Please select a directory"  # Question for user
-      - "~/" # Starting dir
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
+      boolean_var:
+        - BOOLEAN
+        - "Toggle this"
   bash: |
     echo "hello world"
   checks:
@@ -126,12 +120,10 @@ run: # Conflicts with install function
     file_var:
       - FILE
       - "Please select a file" # Question for user
-      - "~/" # Starting dir
       - ".txt" # ex: *.txt. Use * for any type of file
     directory_var:
       - DIRECTORY
       - "Please select a directory"  # Question for user
-      - "~/" # Starting dir
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
