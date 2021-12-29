@@ -1,7 +1,7 @@
 <schemalist>
   <schema path="/io/risi/script/"
          id="io.risi.script">
-    <key type="as" name="installed_scripts">
+    <key type="as" name="installed-scripts">
       <default>[]</default>
       <summary>Installation scripts that have been installed.</summary>
       <description>
