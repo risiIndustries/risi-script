@@ -35,7 +35,7 @@ class Script:
         self.metadata = Metadata(self.parsed_code["metadata"])
         self.installation_mode = "install" in self.parsed_code
         self.can_update = "update" in self.parsed_code
-        self.installed = self.metadata.id in self.get_value("installed-scripts")
+        self.installed = self.metadata.id in saved_data.get_value("installed-scripts")
 
         self.bash_file_path = tempfile.mkstemp()[1]
 
