@@ -30,6 +30,7 @@ class Metadata:
 
 class Script:
     def __init__(self, code):
+        self.code = code
         self.parsed_code = yaml.safe_load(code)
         syntax_check(self.parsed_code)
         self.metadata = Metadata(self.parsed_code["metadata"])
@@ -111,12 +112,13 @@ fi"""
                         f"file {self.parsed_code[parent]['checks'][item][1]} not found"
                     )
             elif self.parsed_code[parent]["checks"][item][0] == "FILECONTAINS":
-                with open(self.parsed_code[parent]['checks'][item][1]) as f:
-                    if not self.parsed_code[parent]['checks'][item][2] in f.read():
-                        raise RisiScriptFailedCheckError("string {0 not found in file {1}".format(
-                            self.parsed_code[parent]['checks'][item][1],
-                            self.parsed_code[parent]['checks'][item][2]
-                        ))
+                if os.path.isfile(self.parsed_code[parent]["checks"][item][1]):
+                    with open(self.parsed_code[parent]['checks'][item][1]) as f:
+                        if not self.parsed_code[parent]['checks'][item][2] in f.read():
+                            raise RisiScriptFailedCheckError("string {0 not found in file {1}".format(
+                                self.parsed_code[parent]['checks'][item][1],
+                                self.parsed_code[parent]['checks'][item][2]
+                            ))
             elif (self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUT" or
                   self.parsed_code[parent]["checks"][item][0] == "COMMANDOUTPUTCONTAINS"):
 
