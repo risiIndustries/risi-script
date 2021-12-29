@@ -94,9 +94,9 @@ update: # Requires install function, optional
       - CHOICE
       - "Please choose this" # Question for users
       - ["Choice1", "Choice2"] # The choices for a user to pick
-      boolean_var:
-        - BOOLEAN
-        - "Toggle this"
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
   bash: |
     echo "hello world"
   checks:
