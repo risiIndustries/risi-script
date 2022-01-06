@@ -3,7 +3,7 @@ metadata:
   name: "ScriptName"
   id: "scriptid"
   description: "Description of what the script does"
-  dependencies:
+  dependencies: # Just put None for no dependencies
     - package1
     - package2
   root: true
@@ -11,6 +11,41 @@ metadata:
   risiscript_version: 1.0
 
 install: # Requires remove function
+  init:
+    entry_var:
+      - ENTRY # Type of init var...
+      - "Please enter something" # Question for user
+    file_var:
+      - FILE
+      - "Please select a file" # Question for user
+      - ".txt" # ex: *.txt. Use * for any type of file
+    directory_var:
+      - DIRECTORY
+      - "Please select a directory"  # Question for user
+    choice_var:
+      - CHOICE
+      - "Please choose this" # Question for users
+      - [ "Choice1", "Choice2" ] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
+      - True
+    bash: |
+      echo "hello world"
+    checks: # use $varname to access variable
+      - FILE:
+          - "file"
+      - FILECONTAINS:
+          - "file"
+          - "string"
+      - COMMANDOUTPUT:
+          - "bash command"
+          - "output"
+      - COMMANDOUTPUTCONTAINS:
+          - "bash command"
+          - "output"
+
+remove: # Requires remove function
   init:
     entry_var:
       - ENTRY # Type of init var...
@@ -29,8 +64,9 @@ install: # Requires remove function
     boolean_var:
       - BOOLEAN
       - "Toggle this"
+      - False # Default option
   bash: |
-    echo "hello world"
+    echo Remove
   checks:
     - FILE:
       - file
@@ -41,8 +77,8 @@ install: # Requires remove function
       - "bash command"
       - "output"
     - COMMANDOUTPUTCONTAINS:
-      - "bash command"
-      - "output"
+      - "echo $boolean_var"
+      - "True"
 
 remove: # Requires install function
   init:
@@ -59,24 +95,25 @@ remove: # Requires install function
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
-      - ["Choice1", "Choice2"] # The choices for a user to pick
+      - [ "Choice1", "Choice2" ] # The choices for a user to pick
     boolean_var:
       - BOOLEAN
       - "Toggle this"
-  bash: |
-    echo "hello world"
-  checks:
-    - FILE:
-      - file
-    - FILECONTAINS:
-      - file
-      - "string"
-    - COMMANDOUTPUT:
-      - "bash command"
-      - "output"
-    - COMMANDOUTPUTCONTAINS:
-      - "bash command"
-      - "output"
+      - True
+    bash: |
+      echo "hello world"
+    checks: # use $varname to access variable
+      - FILE:
+          - "file"
+      - FILECONTAINS:
+          - "file"
+          - "string"
+      - COMMANDOUTPUT:
+          - "bash command"
+          - "output"
+      - COMMANDOUTPUTCONTAINS:
+          - "bash command"
+          - "output"
 
 update: # Requires install function, optional
   init:
@@ -93,24 +130,25 @@ update: # Requires install function, optional
     choice_var:
       - CHOICE
       - "Please choose this" # Question for users
-      - ["Choice1", "Choice2"] # The choices for a user to pick
+      - [ "Choice1", "Choice2" ] # The choices for a user to pick
     boolean_var:
       - BOOLEAN
       - "Toggle this"
-  bash: |
-    echo "hello world"
-  checks:
-    - FILE:
-      - file
-    - FILECONTAINS:
-      - file
-      - "string"
-    - COMMANDOUTPUT:
-      - "bash command"
-      - "output"
-    - COMMANDOUTPUTCONTAINS:
-      - "bash command"
-      - "output"
+      - True
+    bash: |
+      echo "hello world"
+    checks: # use $varname to access variable
+      - FILE:
+          - "file"
+      - FILECONTAINS:
+          - "file"
+          - "string"
+      - COMMANDOUTPUT:
+          - "bash command"
+          - "output"
+      - COMMANDOUTPUTCONTAINS:
+          - "bash command"
+          - "output"
 
 run: # Conflicts with install function
   init:
@@ -131,13 +169,14 @@ run: # Conflicts with install function
     boolean_var:
       - BOOLEAN
       - "Toggle this"
+      - True
   bash: |
     echo "hello world"
-  checks:
+  checks: # use $varname to access variable
     - FILE:
-      - file
+      - "file"
     - FILECONTAINS:
-      - file
+      - "file"
       - "string"
     - COMMANDOUTPUT:
       - "bash command"
