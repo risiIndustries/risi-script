@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import risiscript
@@ -42,6 +43,7 @@ class ScriptWindow:
         self.gui.get_object("titlebar").set_title("risiScript - " + self.script.metadata.name)
 
         self.bash_pulse = False
+        self.dep_pulse = False
         self.checks_pulse = False
 
         # Page 1 (Page showing the code)
@@ -69,11 +71,11 @@ class ScriptWindow:
         self.terminal = Vte.Terminal()
         self.progressbar = self.gui.get_object("progress_bar")
 
-        self.terminal.connect("child_exited", self.bash_done)
         self.terminal.set_vexpand(True)
         self.terminal.set_valign(Gtk.Align.FILL)
         self.terminal_cancellable = Gio.Cancellable()
         self.terminal_cancellable.connect(lambda: Gtk.main_quit())
+        self.terminal.connect("child_exited", self.bash_done)
 
         self.gui.get_object("run_page").add(self.terminal)
         self.gui.get_object("run_page").reorder_child(self.terminal, 0)
@@ -202,7 +204,49 @@ class ScriptWindow:
         self.script.code_to_script()
         self.next_btn.set_visible(False)
 
-        args = ["/bin/bash", self.script.bash_file_path]
+        if self.script.metadata.dependencies != None:
+            self.run_dep_in_terminal()
+        else:
+            self.run_bash_in_terminal()
+
+        self.back_btn.set_sensitive(True)
+        self.back_btn.set_label("Cancel")
+        self.next_btn.set_sensitive(False)
+
+        pulse_thread = threading.Thread(target=self.pulse_threading)
+        pulse_thread.daemon = True
+        pulse_thread.start()
+
+    def check_args(self):
+        if self.script.arguments:
+            for arg in self.script.arguments[self.run]:
+                if self.arguments[arg].output() is None:
+                    return False
+        return True
+
+    def run_dep_in_terminal():
+        self.dep_pulse = True
+
+        self.terminal.spawn_async(
+            Vte.PtyFlags.DEFAULT,
+            os.environ['HOME'],
+            args,
+            ["risiscript-run", "deps"] + self.script.metadata.dependencies,
+            GLib.SpawnFlags.DEFAULT,
+            None, None,
+            -1,
+            self.terminal_cancellable,
+            None,
+            None
+        )
+
+    def run_bash_in_terminal():
+        self.bash_pulse = True
+        args = ["risiscript-run", self.script.bash_file_path]
+
+        if self.script.metadata.root:
+            args.insert(0, "pkexec")
+
         if self.run != "run":
             args.append(self.run)
         if self.arguments is not None:
@@ -222,21 +266,30 @@ class ScriptWindow:
             None
         )
 
-        self.back_btn.set_sensitive(True)
-        self.back_btn.set_label("Cancel")
-        self.next_btn.set_sensitive(False)
+    def terminal_done(self, terminal, status):
+        if dep_pulse:
+            deps_done(self, terminal, status)
+        elif bash_pulse:
+            bash_done(self, terminal, status)
 
-        self.bash_pulse = True
-        pulse_thread = threading.Thread(target=self.pulse_threading)
-        pulse_thread.daemon = True
-        pulse_thread.start()
+    def deps_done(self, terminal, status):
+        if status != 0:
+            dialog = Gtk.MessageDialog(
+                transient_for=self.window,
+                flags=0,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text="Error: DNF Exit code not 0",
+            )
+            dialog.format_secondary_text(
+                "Dependencies failed to install"
+            )
+            dialog.run()
+            Gtk.main_quit()
+        self.dep_pulse = False
+        self.progressbar.set_fraction(0)
 
-    def check_args(self):
-        if self.script.arguments:
-            for arg in self.script.arguments[self.run]:
-                if self.arguments[arg].output() is None:
-                    return False
-        return True
+        self.run_bash_in_terminal()
 
     def bash_done(self, terminal, status):
         if status != 0:
@@ -262,7 +315,7 @@ class ScriptWindow:
         self.progressbar.set_fraction(0)
 
     def pulse_threading(self):
-        while self.bash_pulse is True:
+        while self.bash_pulse or self.dep_pulse:
             GLib.idle_add(lambda: self.progressbar.pulse())
             time.sleep(0.1)
         while self.checks_pulse is True:
