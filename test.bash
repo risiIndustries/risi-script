@@ -11,4 +11,4 @@ sudo cp risi-script-gtk/risi-script-gtk.ui /usr/share/risi-script-gtk/risi-scrip
 
 sudo chmod +x /bin/risiscript-run
 
-python3 risi-script-gtk/__main__.py risi-script-gtk/test.risisc
+python3 risi-script-gtk/__main__.py test.risisc

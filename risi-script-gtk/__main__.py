@@ -204,7 +204,7 @@ class ScriptWindow:
         self.script.code_to_script()
         self.next_btn.set_visible(False)
 
-        if self.script.metadata.dependencies != None:
+        if self.script.metadata.dependencies is not None:
             self.run_dep_in_terminal()
         else:
             self.run_bash_in_terminal()
