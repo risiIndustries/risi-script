@@ -26,8 +26,8 @@ class ScriptWindow:
     def __init__(self):
         self.gui = Gtk.Builder()
         self.gui.add_from_file(
-            "risiscriptgui.ui"
-            # "/usr/share/risi-script-gtk/risiscriptgui.ui"
+            # "risi-script-gtk.ui"
+            "/usr/share/risi-script-gtk/risi-script-gtk.ui"
         )
         self.window = self.gui.get_object("window")
         self.stack = self.gui.get_object("pages")
@@ -75,7 +75,7 @@ class ScriptWindow:
         self.terminal.set_valign(Gtk.Align.FILL)
         self.terminal_cancellable = Gio.Cancellable()
         self.terminal_cancellable.connect(lambda: Gtk.main_quit())
-        self.terminal.connect("child_exited", self.bash_done)
+        self.terminal.connect("child_exited", self.terminal_done)
 
         self.gui.get_object("run_page").add(self.terminal)
         self.gui.get_object("run_page").reorder_child(self.terminal, 0)
@@ -224,14 +224,15 @@ class ScriptWindow:
                     return False
         return True
 
-    def run_dep_in_terminal():
+    def run_dep_in_terminal(self):
+        self.progressbar.set_text("Installing Dependencies")
         self.dep_pulse = True
 
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
             os.environ['HOME'],
-            args,
-            ["risiscript-run", "deps"] + self.script.metadata.dependencies,
+            ["pkexec", "risiscript-run", "deps"] + self.script.metadata.dependencies,
+            [],
             GLib.SpawnFlags.DEFAULT,
             None, None,
             -1,
@@ -240,8 +241,9 @@ class ScriptWindow:
             None
         )
 
-    def run_bash_in_terminal():
+    def run_bash_in_terminal(self):
         self.bash_pulse = True
+        self.progressbar.set_text("Running Bash")
         args = ["risiscript-run", self.script.bash_file_path]
 
         if self.script.metadata.root:
@@ -267,10 +269,10 @@ class ScriptWindow:
         )
 
     def terminal_done(self, terminal, status):
-        if dep_pulse:
-            deps_done(self, terminal, status)
-        elif bash_pulse:
-            bash_done(self, terminal, status)
+        if self.dep_pulse:
+            self.deps_done(terminal, status)
+        elif self.bash_pulse:
+            self.bash_done(terminal, status)
 
     def deps_done(self, terminal, status):
         if status != 0:
@@ -279,7 +281,7 @@ class ScriptWindow:
                 flags=0,
                 message_type=Gtk.MessageType.ERROR,
                 buttons=Gtk.ButtonsType.OK,
-                text="Error: DNF Exit code not 0",
+                text="Error: package manager exit code not 0",
             )
             dialog.format_secondary_text(
                 "Dependencies failed to install"
@@ -288,7 +290,6 @@ class ScriptWindow:
             Gtk.main_quit()
         self.dep_pulse = False
         self.progressbar.set_fraction(0)
-
         self.run_bash_in_terminal()
 
     def bash_done(self, terminal, status):
@@ -305,13 +306,11 @@ class ScriptWindow:
             )
             dialog.run()
             Gtk.main_quit()
-        self.progressbar.set_text("Running Checks")
 
         self.bash_pulse = False
         self.checks_pulse = True
         self.run_cancel_dialog.destroy()
         self.back_btn.set_sensitive(False)
-
         self.progressbar.set_fraction(0)
 
     def pulse_threading(self):
@@ -343,6 +342,7 @@ class ScriptWindow:
 
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
+                print("done")
 
     def check_dialog(self):
         dialog = Gtk.MessageDialog(
