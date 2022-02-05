@@ -6,6 +6,7 @@
       <summary>Installation scripts that have been installed.</summary>
       <description>
         If script id is in this list, than it shows the remove and update buttons.
+        DO NOT EDIT
       </description>
     </key>
   </schema>

@@ -22,7 +22,7 @@
                 <property name="margin-end">10</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">10</property>
-                <property name="label" translatable="yes">&lt;b&gt;You are about to run a risiScript file.
+                <property name="label" translatable="yes">&lt;b&gt;You are about to run a risiscript file.
 Make sure that you trust this script before you run it.
 If you are technical enough, you can review the script's code below.
 Otherwise, continue at your own risk.&lt;/b&gt;</property>
@@ -357,7 +357,7 @@ Are you sure you want to continue?</property>
       <object class="GtkHeaderBar" id="titlebar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="title" translatable="yes">risiScript</property>
+        <property name="title" translatable="yes">risiscript</property>
         <property name="spacing">5</property>
         <child>
           <object class="GtkButton" id="back_btn">

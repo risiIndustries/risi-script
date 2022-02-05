@@ -40,7 +40,7 @@ class ScriptWindow:
             self.run = "install"
         else:
             self.run = "run"
-        self.gui.get_object("titlebar").set_title("risiScript - " + self.script.metadata.name)
+        self.gui.get_object("titlebar").set_title("risiscript - " + self.script.metadata.name)
 
         self.bash_pulse = False
         self.dep_pulse = False
@@ -231,7 +231,7 @@ class ScriptWindow:
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
             os.environ['HOME'],
-            ["pkexec", "risiscript-run", "deps"] + self.script.metadata.dependencies,
+            ["pkexec", "risiscript-run", "deps"] + list(self.script.metadata.dependencies),
             [],
             GLib.SpawnFlags.DEFAULT,
             None, None,
@@ -334,15 +334,18 @@ class ScriptWindow:
             else:
                 GLib.idle_add(lambda: self.progressbar.set_text("Done"))
                 self.checks_pulse = False
-                installed_list = saved_data.get_strv("installed-scripts")
 
-                if self.script.metadata.id not in installed_list and self.script.installation_mode:
-                    installed_list.append(self.script.metadata.id)
-                    GLib.idle_add(lambda: saved_data.set_strv("installed-scripts", installed_list))
+                if self.run in ["install", "remove", "update"]:
+                    installed_list = saved_data.get_strv("installed-scripts")
+                    if self.script.metadata.id not in installed_list and self.run in "install":
+                        installed_list.append(self.script.metadata.id)
+                        GLib.idle_add(lambda: saved_data.set_strv("installed-scripts", installed_list))
+                    elif self.script.metadata.id in installed_list and self.run == "remove":
+                        installed_list.remove(self.script.metadata.id)
+                        GLib.idle_add(lambda: saved_data.set_strv("installed-scripts", installed_list))
 
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
-                print("done")
 
     def check_dialog(self):
         dialog = Gtk.MessageDialog(

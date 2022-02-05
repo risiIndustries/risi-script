@@ -11,12 +11,12 @@ saved_data = Gio.Settings.new("io.risi.script")
 
 
 class RisiScriptError(Exception):
-    """Raised when something is wrong with your risi script code"""
+    """Raised when something is wrong with your risiscript code"""
     pass
 
 
 class RisiScriptFailedCheckError(Exception):
-    """Raised when a risi-script program fails a check"""
+    """Raised when a risiscript program fails a check"""
     pass
 
 
@@ -200,7 +200,7 @@ def syntax_check(parsed_code):
     elif "root" not in parsed_code["metadata"].keys():
         raise RisiScriptError("root missing from metadata")
     elif "risiscript_version" not in parsed_code["metadata"].keys():
-        raise RisiScriptError("risi-script version missing from metadata")
+        raise RisiScriptError("risiscript version missing from metadata")
 
     # Checking for conflicting functions
     elif "run" in parsed_code.keys() and "install" in parsed_code.keys():
