@@ -354,7 +354,7 @@ class ScriptWindow:
                         index = 1
                         while not os.path.exists(f"{copypath}-{str(index)}"):
                             index += 1
-                        copypath = f"{copypath}-{str(index)}"
+                        copypath = f"{copypath}-{str(ind ex)}"
 
                     with open(copypath) as f:
                         f.write(self.script.code)
