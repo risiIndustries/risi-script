@@ -18,9 +18,6 @@ if sys.argv[1] in run_args:
     subp = subprocess.run(args, stderr=sys.stderr)
     sys.exit(subp.returncode)
 
-    if not one_time_use:
-        if not os.path.isdir(os.path.expanduser('~') + "/.risiscripts"):
-            os.makedirs(os.path.expanduser('~') + "/.risiscripts")
 
 elif sys.argv[1] == "deps":
     to_install = []

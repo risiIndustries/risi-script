@@ -21,6 +21,7 @@ else:
     print("Please provide risi-script file")
     exit()
 
+RISISCRIPTSDIR = os.path.expanduser('~') + "/.risiscripts/"
 
 class ScriptWindow:
     def __init__(self):
@@ -343,6 +344,20 @@ class ScriptWindow:
                     elif self.script.metadata.id in installed_list and self.run == "remove":
                         installed_list.remove(self.script.metadata.id)
                         GLib.idle_add(lambda: saved_data.set_strv("installed-scripts", installed_list))
+
+                if not self.script.metadata.one_time_use:
+                    if not os.path.isdir(RISISCRIPTSDIR):
+                        os.makedirs(RISISCRIPTSDIR)
+
+                    copypath = RISISCRIPTSDIR + self.script.metadata.id
+                    if os.path.exists(copypath):
+                        index = 1
+                        while not os.path.exists(f"{copypath}-{str(index)}"):
+                            index += 1
+                        copypath = f"{copypath}-{str(index)}"
+
+                    with open(copypath) as f:
+                        f.write(self.script.code)
 
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
