@@ -201,13 +201,9 @@ class ScriptWindow:
 
     def go_to_run_page(self):
         self.stack.set_visible_child_name("run_page")
-        self.script.code_to_script()
         self.next_btn.set_visible(False)
 
-        if self.script.metadata.dependencies is not None:
-            self.run_dep_in_terminal()
-        else:
-            self.run_bash_in_terminal()
+        self.run_bash_in_terminal()
 
         self.back_btn.set_sensitive(True)
         self.back_btn.set_label("Cancel")
@@ -231,7 +227,7 @@ class ScriptWindow:
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
             os.environ['HOME'],
-            ["pkexec", "risiscript-run", "deps"] + self.script.metadata.dependencies,
+            ["pkexec", "risiscript-run", "deps"] + list(self.script.metadata.dependencies),
             [],
             GLib.SpawnFlags.DEFAULT,
             None, None,
@@ -244,15 +240,15 @@ class ScriptWindow:
     def run_bash_in_terminal(self):
         self.bash_pulse = True
         self.progressbar.set_text("Running Bash")
-        args = ["risiscript-run", self.script.bash_file_path]
+        args = [
+            "/bin/risiscript-run", "--gui",
+            "--file", f"{os.getcwd()}/{sys.argv[1]}",
+            "--run", self.run
+        ]
 
-        if self.script.metadata.root:
-            args.insert(0, "pkexec")
-
-        if self.run != "run":
-            args.append(self.run)
         if self.arguments is not None:
             for arg in self.generate_arguments():
+                args.append("--arg")
                 args.append(str(arg))
 
         self.terminal.spawn_async(
@@ -269,9 +265,7 @@ class ScriptWindow:
         )
 
     def terminal_done(self, terminal, status):
-        if self.dep_pulse:
-            self.deps_done(terminal, status)
-        elif self.bash_pulse:
+        if self.bash_pulse:
             self.bash_done(terminal, status)
 
     def deps_done(self, terminal, status):

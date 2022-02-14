@@ -103,8 +103,7 @@ class Script:
                     update_args.append(str(key) + "=$" + str(key_index))
                     key_index += 1
 
-            file = f"""#!/bin/bash\n
-if [ $1 = "install" ]; then\n
+            bash = f"""if [ $1 = "install" ]; then\n
 {indent_newline(indent + newline.join(install_args))}\n
 {indent_newline(indent + self.parsed_code["install"]["bash"])}\nfi\n
 if [ $1 = "remove" ]; then\n
@@ -112,27 +111,27 @@ if [ $1 = "remove" ]; then\n
 {indent_newline(indent + self.parsed_code["remove"]["bash"])}\nfi"""
 
             if self.can_update:
-                file = file + f"""\n\nif [ $1 = "update" ]; then\n
+                bash = bash + f"""\n\nif [ $1 = "update" ]; then\n
 {indent_newline(indent + newline.join(update_args))}\n
 {indent_newline(indent + self.parsed_code["update"]["bash"])}
 fi"""
 
         else:
-            run_args = []
-            key_index = 1
             try:
+                run_args = []
+                key_index = 1
+
                 for key in self.arguments["run"].keys():
                     run_args.append(str(key) + "=$" + str(key_index))
                     key_index += 1
             except (TypeError, AttributeError):
-                pass
+                run_args = []
 
-            file = f"""#!/bin/bash\n
+            bash = f"""#!/bin/bash\n
 {newline.join(run_args)}\n
 {self.parsed_code["run"]["bash"]}"""
 
-        bash_file.write(file)
-        bash_file.close()
+        return bash
 
     def run_checks(self, parent, arg_outputs, pulse_function=None):
         for item in self.parsed_code[parent]["checks"]:  # Note: items are dicts because of yaml weirdness
