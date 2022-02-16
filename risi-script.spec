@@ -19,7 +19,7 @@ Wraps around bash with simple yaml files and a library to create GUIs for them.
 Summary:	Gtk client for reading risi-script files
 Requires:	risi-script
 
-%description
+%description gtk
 Gtk client for .risisc (.yml) risi script files
 
 %prep
