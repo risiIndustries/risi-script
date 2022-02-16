@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-import os
-import sys
-import subprocess
-import tempfile
-import dnf
-import time
-import argparse
-import risiscript
+import os, sys, subprocess, tempfile, dnf, time, argparse, risiscript
 
 if os.geteuid() == 0:
     print("For security reasons, do not run risiscript-run as root.")
