@@ -227,7 +227,7 @@ class ScriptWindow:
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
             os.environ['HOME'],
-            ["pkexec", "risiscript-run", "deps"] + list(self.script.metadata.dependencies),
+            ["pkexec", "risi-script-run", "deps"] + list(self.script.metadata.dependencies),
             [],
             GLib.SpawnFlags.DEFAULT,
             None, None,
@@ -241,7 +241,7 @@ class ScriptWindow:
         self.bash_pulse = True
         self.progressbar.set_text("Running Bash")
         args = [
-            "/bin/risiscript-run", "--gui",
+            "/bin/risi-script-run", "--gui",
             "--file", f"{os.getcwd()}/{sys.argv[1]}",
             "--run", self.run
         ]

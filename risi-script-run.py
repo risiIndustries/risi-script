@@ -69,3 +69,4 @@ elif args.run in run_args:
         sp.communicate(input=bytes(code, "utf-8"))
     else:
         run(False, code)
+
