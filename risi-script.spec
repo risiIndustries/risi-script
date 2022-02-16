@@ -9,8 +9,8 @@ Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/main.ta
 
 BuildArch:	noarch
 
-Requires: 	python
-Requires:	python3-gobject
+Requires: 	python3.10
+Requires:   python3-gobject
 
 %description
 Wraps around bash with simple yaml files and a library to create GUIs for them.
