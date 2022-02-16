@@ -27,7 +27,7 @@ Gtk client for .risisc (.yml) risi script files
 
 %build
 %install
-mkdir -p %{buildroot}%%{_libdir}/python3.10/site-packages
+mkdir -p %{buildroot}%{_libdir}/python3.10/site-packages
 mkdir -p %{buildroot}%{_bindir}/risi-script-run
 mkdir -p %{buildroot}%{_datadir}/glib-2.0/schemas
 mkdir -p %{buildroot}%{_bindir}/risi-script-gtk
