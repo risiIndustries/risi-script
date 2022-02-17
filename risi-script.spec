@@ -10,7 +10,7 @@ Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/main.ta
 BuildArch:	noarch
 
 BuildRequires:  python3-devel
-Requires: 	python3.10
+Requires: 	python3
 Requires:   python3-gobject
 
 %description
@@ -43,7 +43,7 @@ cp risi-script-gtk/risi-script-gtk.ui %{buildroot}%{_datadir}/risi-script-gtk/ri
 %files
 # %license add-license-file-here
 # %doc add-docs-here
-%{_libdir}/python3.10/site-packages/risi-script.py
+%{python3_sitelib}/site-packages/risi-script.py
 %{_bindir}/risi-script-run
 %{_datadir}/glib-2.0/schemas/io.risi.script.gschema.xml
 
