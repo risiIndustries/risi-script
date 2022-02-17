@@ -9,6 +9,7 @@ Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/main.ta
 
 BuildArch:	noarch
 
+BuildRequires:  python3-devel
 Requires: 	python3.10
 Requires:   python3-gobject
 
