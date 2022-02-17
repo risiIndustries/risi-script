@@ -44,6 +44,7 @@ cp risi-script-gtk/risi-script-gtk.ui %{buildroot}%{_datadir}/risi-script-gtk/ri
 # %license add-license-file-here
 # %doc add-docs-here
 %{python3_sitelib}/risi-script.py
+%{python3_sitelib}/risi-script.cpython-*.pyc
 %{_bindir}/risi-script-run
 %{_datadir}/glib-2.0/schemas/io.risi.script.gschema.xml
 
