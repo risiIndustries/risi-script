@@ -85,7 +85,7 @@ class ScriptWindow:
             transient_for=self.window,
             flags=0,
             message_type=Gtk.MessageType.WARNING,
-            text="Are you sure you want to cancel this risiScript?",
+            text="Are you sure you want to cancel this risi-script?",
         )
         self.run_cancel_dialog.add_buttons(
             "Yes",
@@ -94,7 +94,7 @@ class ScriptWindow:
             Gtk.ResponseType.NO
         )
         self.run_cancel_dialog.format_secondary_text(
-            "This will not reverse the changes this risiScript file has already made and can be destructive."
+            "This will not reverse the changes this risi-script file has already made and can be destructive."
         )
 
         # Navigation Buttons
@@ -119,15 +119,20 @@ class ScriptWindow:
                 for arg in script_args[self.run]:
                     self.arguments[arg] = args_to_class[
                         script_args[self.run][arg].pop(0)
-                    ](*script_args[self.run][arg])  # Passes YAML data as args for the class
-                    box.add(self.arguments[arg])
-                    self.arguments[arg].show_all()
+                    ](*[self] + script_args[self.run][arg])  # Passes YAML data as args for the class
+                    if not isinstance(self.arguments[arg], WarningDialog):
+                        box.add(self.arguments[arg])
+                        self.arguments[arg].show_all()
 
     def generate_arguments(self):
         args = []
         if self.script.arguments[self.run] is not None:
             for arg in self.script.arguments[self.run]:
-                args.append(self.arguments[arg].output())
+                if (
+                        not isinstance(self.arguments[arg], Description) and
+                        not isinstance(self.arguments[arg], WarningDialog)
+                ):
+                    args.append(self.arguments[arg].output())
         return args
 
     def get_arg_outputs(self):
@@ -200,6 +205,11 @@ class ScriptWindow:
                 self.go_to_run_page()
 
     def go_to_run_page(self):
+        if self.script.arguments[self.run] is not None:
+            for arg in self.script.arguments[self.run]:
+                if isinstance(self.arguments[arg], WarningDialog):
+                    self.arguments[arg].run()
+
         self.stack.set_visible_child_name("run_page")
         self.next_btn.set_visible(False)
 
@@ -216,7 +226,11 @@ class ScriptWindow:
     def check_args(self):
         if self.script.arguments:
             for arg in self.script.arguments[self.run]:
-                if self.arguments[arg].output() is None:
+                if (
+                        self.arguments[arg].output() is None and
+                        not isinstance(self.arguments[arg], Description) and
+                        not isinstance(self.arguments[arg], WarningDialog)
+                ):
                     return False
         return True
 
@@ -383,12 +397,41 @@ class ScriptWindow:
             self.next_btn.set_sensitive(True)
 
 
+class WarningDialog:
+    def __init__(self, window, title, description):
+        self.dialog = Gtk.MessageDialog(
+            transient_for=window.window,
+            flags=0,
+            message_type=Gtk.MessageType.ERROR,
+            text=title
+        )
+        self.dialog.add_buttons(
+            "Cancel",
+            Gtk.ResponseType.NO,
+            "Continue",
+            Gtk.ResponseType.YES
+        )
+        self.dialog.format_secondary_text(
+            description
+        )
+
+    def run(self):
+        self.dialog.show_all()
+        self.dialog.run()
+        if self.dialog == Gtk.ResponseType.NO:
+            Gtk.main_quit()
+        self.dialog.destroy()
+
+    def output(self):
+        return None
+
+
 class Argument(Gtk.Box):
-    def __init__(self, arg_label):
+    def __init__(self, window, arg_label):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.HORIZONTAL)
-        label = Gtk.Label(label=arg_label)
-        label.set_halign(Gtk.Align.START)
-        self.add(label)
+        self.label = Gtk.Label(label=arg_label)
+        self.label.set_halign(Gtk.Align.START)
+        self.add(self.label)
 
         self.set_margin_top(10)
         self.set_margin_bottom(10)
@@ -404,9 +447,20 @@ class Argument(Gtk.Box):
         return None
 
 
+class Description(Argument):
+    def __init__(self, window, arg_label):
+        Argument.__init__(self, window, arg_label)
+        self.label.set_markup("<small>" + arg_label + "</small>")
+        self.label.get_style_context().add_class('dim-label')
+        self.set_margin_top(0)
+
+    def output(self):
+        return None
+
+
 class ArgEntry(Argument):
-    def __init__(self, arg_label):
-        Argument.__init__(self, arg_label)
+    def __init__(self, window, arg_label):
+        Argument.__init__(self, window, arg_label)
         self.entry = Gtk.Entry()
         self.add_widget(self.entry)
 
@@ -415,8 +469,8 @@ class ArgEntry(Argument):
 
 
 class ArgFile(Argument):
-    def __init__(self, arg_label, file_pattern):
-        Argument.__init__(self, arg_label)
+    def __init__(self, window, arg_label, file_pattern):
+        Argument.__init__(self, window, arg_label)
         self.fbtn = Gtk.FileChooserButton(title=arg_label, action=Gtk.FileChooserAction.OPEN)
         pattern = Gtk.FileFilter()
         pattern.add_pattern(file_pattern)
@@ -431,8 +485,8 @@ class ArgFile(Argument):
 
 
 class ArgDir(Argument):
-    def __init__(self, arg_label):
-        Argument.__init__(self, arg_label)
+    def __init__(self, window, arg_label):
+        Argument.__init__(self, window, arg_label)
         self.fbtn = Gtk.FileChooserButton(title=arg_label, action=Gtk.FileChooserAction.SELECT_FOLDER)
         pattern = Gtk.FileFilter()
         pattern.add_pattern("*")
@@ -447,8 +501,8 @@ class ArgDir(Argument):
 
 
 class ArgChoice(Argument):
-    def __init__(self, arg_label, choices):
-        Argument.__init__(self, arg_label)
+    def __init__(self, window, arg_label, choices):
+        Argument.__init__(self, window, arg_label)
         self.combo = Gtk.ComboBoxText()
         for choice in choices:
             self.combo.append_text(choice)
@@ -459,8 +513,8 @@ class ArgChoice(Argument):
 
 
 class ArgBoolean(Argument):
-    def __init__(self, arg_label, default):
-        Argument.__init__(self, arg_label)
+    def __init__(self, window, arg_label, default):
+        Argument.__init__(self, window, arg_label)
         self.switch = Gtk.Switch()
         self.switch.set_active(default)
         self.add_widget(self.switch)
@@ -470,6 +524,8 @@ class ArgBoolean(Argument):
 
 
 args_to_class = {
+    "DESCRIPTION": Description,
+    "WARNING": WarningDialog,
     "ENTRY": ArgEntry,
     "FILE": ArgFile,
     "DIRECTORY": ArgDir,

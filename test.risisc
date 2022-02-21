@@ -15,7 +15,15 @@ run: # Conflicts with install function
       - BOOLEAN
       - "Toggle this"
       - True
+    description:
+      - DESCRIPTION
+      - "This is a description"
+    warning:
+      - WARNING
+      - "Warning"
+      - "This is a warning description"
   bash: |
+    echo ${BASH_SOURCE}
     echo "hello world"
   checks: # use $varname to access variable
     - COMMANDOUTPUTCONTAINS:

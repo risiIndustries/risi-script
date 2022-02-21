@@ -82,6 +82,9 @@ remove: # Requires remove function
 
 remove: # Requires install function
   init:
+    description:
+      - DESCRIPTION # Used only for GUIs, does not define a variable
+      - "Please enter something here"
     entry_var:
       - ENTRY # Type of init var...
       - "Please enter something" # Question for user
@@ -100,7 +103,7 @@ remove: # Requires install function
       - BOOLEAN
       - "Toggle this"
       - True
-    bash: |
+    bash:
       echo "hello world"
     checks: # use $varname to access variable
       - FILE:

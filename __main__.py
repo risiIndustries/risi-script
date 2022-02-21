@@ -83,25 +83,14 @@ class Script:
         bash_file = open(self.bash_file_path, "a+")
 
         if self.installation_mode:  # Checks for installation script
-            install_args = []  # Args from init function
-            remove_args = []
-            update_args = []
+            # install_args = []  # Args from init function
+            # remove_args = []
+            # update_args = []
 
-            key_index = 2  # Set to 2 because the 1st arg is reserved for ["install", "remove", "update"]
-            for key in self.arguments["install"].keys():  # Getting variables from init function
-                install_args.append(str(key) + "=$" + str(key_index))
-                key_index += 1
-
-            key_index = 2
-            for key in self.arguments["remove"].keys():
-                remove_args.append(str(key) + "=$" + str(key_index))
-                key_index += 1
-
+            install_args = self.get_args("install", 2)
+            remove_args = self.get_args("remove", 2)
             if self.can_update:
-                key_index = 2
-                for key in self.arguments["update"].keys():
-                    update_args.append(str(key) + "=$" + str(key_index))
-                    key_index += 1
+                update_args = self.get_args("update", 2)
 
             bash = f"""if [ $1 = "install" ]; then\n
 {indent_newline(indent + newline.join(install_args))}\n
@@ -117,18 +106,13 @@ if [ $1 = "remove" ]; then\n
 fi"""
 
         else:
-            try:
-                run_args = []
-                key_index = 1
+            #try:
+            run_args = []
+            run_args = self.get_args("run", 1)
+            # except (TypeError, AttributeError):
+            #    run_args = []
 
-                for key in self.arguments["run"].keys():
-                    run_args.append(str(key) + "=$" + str(key_index))
-                    key_index += 1
-            except (TypeError, AttributeError):
-                run_args = []
-
-            bash = f"""#!/bin/bash\n
-{newline.join(run_args)}\n
+            bash = f"""{newline.join(run_args)}\n
 {self.parsed_code["run"]["bash"]}"""
 
         return bash
@@ -184,6 +168,15 @@ fi"""
                     ))
             if pulse_function is not None:
                 pulse_function()
+
+    def get_args(self, run, key_index):
+        args = []
+        for key in self.arguments[run].keys():
+            var_type = self.arguments[run][key][0]
+            if var_type != "WARNING" and var_type != "DESCRIPTION":
+                args.append(str(key) + "=$" + str(key_index))
+                key_index += 1
+        return args
 
 
 def syntax_check(parsed_code):
