@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import os, yaml, tempfile, subprocess
+import os
+import subprocess
+import tempfile
+import yaml
 from gi.repository import Gio
 
 newline = "\n"
