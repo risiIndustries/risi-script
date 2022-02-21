@@ -9,8 +9,9 @@ Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/main.ta
 
 BuildArch:	noarch
 
-Requires: 	python
-Requires:	python3-gobject
+BuildRequires:  python3-devel
+Requires: 	python3
+Requires:   python3-gobject
 
 %description
 Wraps around bash with simple yaml files and a library to create GUIs for them.
@@ -19,7 +20,7 @@ Wraps around bash with simple yaml files and a library to create GUIs for them.
 Summary:	Gtk client for reading risi-script files
 Requires:	risi-script
 
-%description
+%description gtk
 Gtk client for .risisc (.yml) risi script files
 
 %prep
@@ -27,18 +28,24 @@ Gtk client for .risisc (.yml) risi script files
 
 %build
 %install
-mkdir %{buildroot}%{_exec_prefix}
+mkdir -p %{buildroot}%{python3_sitelib}
+mkdir -p %{buildroot}%{_bindir}/risi-script-run
+mkdir -p %{buildroot}%{_datadir}/glib-2.0/schemas
+mkdir -p %{buildroot}%{_bindir}/risi-script-gtk
+mkdir -p %{buildroot}%{_datadir}/risi-script-gtk/
 
-cp risi-script.py %{buildroot}%{_lib}/python3.10/site-packages
+cp __main__.py %{buildroot}%{python3_sitelib}/risi-script.py
 cp risi-script-run.py %{buildroot}%{_bindir}/risi-script-run
-cp io.risi.script.gschema.xml %{_datadir}/glib-2.0/schemas
+cp io.risi.script.gschema.xml %{buildroot}%{_datadir}/glib-2.0/schemas
 cp risi-script-gtk/__main__.py %{buildroot}%{_bindir}/risi-script-gtk
 cp risi-script-gtk/risi-script-gtk.ui %{buildroot}%{_datadir}/risi-script-gtk/risi-script-gtk.ui
 
 %files
 # %license add-license-file-here
 # %doc add-docs-here
-%{_lib}/python3.10/site-packages/risi-script.py
+%{python3_sitelib}/risi-script.py
+%{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.opt-1.pyc
+%{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.pyc
 %{_bindir}/risi-script-run
 %{_datadir}/glib-2.0/schemas/io.risi.script.gschema.xml
 
