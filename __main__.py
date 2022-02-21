@@ -138,10 +138,7 @@ fi"""
                 if os.path.isfile(args[0]):
                     with open(args[0]) as f:
                         if not args[1] in f.read():
-                            raise RisiScriptFailedCheckError("string '{0}' not found in file '{1}'".format(
-                                args[0],
-                                args[1]
-                            ))
+                            raise RisiScriptFailedCheckError(f"string '{args[0]}' not found in file '{args[1]}'")
             elif list(item)[0] in ["COMMANDOUTPUT", "COMMANDOUTPUTCONTAINS"]:
                 subproc = subprocess.run(
                     args[0],
