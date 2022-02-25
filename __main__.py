@@ -148,21 +148,12 @@ fi"""
                     universal_newlines=True
                 )
                 if subproc.returncode != 0:
-                    raise RisiScriptFailedCheckError("command '{0}' threw error:\n{1}".format(
-                        args[0],
-                        subproc.stderr
-                    ))
+                    raise RisiScriptFailedCheckError(f"command '{args[0]}' threw error:\n{subproc.stderr}"
                 elif list(item.keys())[0] == "COMMANDOUTPUT" and args[1] != subproc.stdout:
                     print("meme")
-                    raise RisiScriptFailedCheckError("string '{0}' doesn't match output of '{1}'".format(
-                        args[1],
-                        args[0]
-                    ))
+                    raise RisiScriptFailedCheckError(f"string '{args[1]}' doesn't match output of '{args[0]}'"
                 elif list(item.keys())[0] == "COMMANDOUTPUTCONTAINS" and args[1] not in subproc.stdout:
-                    raise RisiScriptFailedCheckError("string '{0}' doesn't contain output of '{1}'".format(
-                        args[1],
-                        args[0]
-                    ))
+                    raise RisiScriptFailedCheckError(f"string '{args[1]}' doesn't contain output of '{args[0]}'"
             if pulse_function is not None:
                 pulse_function()
 
