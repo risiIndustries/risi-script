@@ -1,0 +1,22 @@
+#!/bin/risiscript
+metadata:
+  name: "Setup Flathub"
+  id: "io.risi.flatpak"
+  description: "Installs Flatpak and sets up Flathub repo."
+  dependencies:
+    - flatpak
+  root: True
+  one_time_use: True
+  risiscript_version: 1.0
+
+run:
+  bash: |
+    echo "installing flathub"
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    echo "setting theme overrides"
+    flatpak override --filesystem=~/.themes
+    flatpak override --filesystem=/usr/share/themes
+  checks:
+    - COMMANDOUTPUTCONTAINS:
+      - "flatpak remotes"
+      - "flathub"

@@ -171,11 +171,12 @@ fi"""
 
     def get_args(self, run, key_index):
         args = []
-        for key in self.arguments[run].keys():
-            var_type = self.arguments[run][key][0]
-            if var_type != "WARNING" and var_type != "DESCRIPTION":
-                args.append(str(key) + "=$" + str(key_index))
-                key_index += 1
+        if self.arguments[run] is not None:
+            for key in self.arguments[run].keys():
+                var_type = self.arguments[run][key][0]
+                if var_type != "WARNING" and var_type != "DESCRIPTION":
+                    args.append(str(key) + "=$" + str(key_index))
+                    key_index += 1
         return args
 
 

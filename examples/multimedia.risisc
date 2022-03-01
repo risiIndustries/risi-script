@@ -1,0 +1,32 @@
+#!/bin/risiscript
+metadata:
+  name: "Multimedia Codecs"
+  id: "io.risi.multimedia"
+  description: "Installs RPMFusion and Multimedia Codecs"
+  dependencies:
+    - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+    - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+  root: True
+  one_time_use: True
+  risiscript_version: 1.0
+
+run:
+  init:
+    tainted_drivers:
+      - BOOLEAN
+      - "Enable Tainted Codecs"
+      - False
+    tainted_description:
+      - DESCRIPTION
+      - "Enables extra drivers that may be restricted in some countries (recommended if legal in your country)"
+  bash: |
+    sudo dnf groupupdate -y multimedia
+    if [ "$tainted_drivers" = true ]
+    then
+ 	dnf install -y rpmfusion-free-release-tainted rpmfusion-nonfree-release-tainted
+	dnf install -y libdvdcss
+    fi
+  checks:
+    - COMMANDOUTPUTCONTAINS:
+      - "rpm -q gstreamer1-plugins-ugly && echo installed"
+      - "installed" 

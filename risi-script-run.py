@@ -8,10 +8,6 @@ import time
 
 import risiscript
 
-if os.geteuid() == 0:
-    print("For security reasons, do not run risiscript-run as root.")
-    print("risiscript-run will automatically prompt you for root if needed.")
-
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("--rootstdin", action="store_true")
 arg_parser.add_argument("--run", type=str, action="store")
@@ -34,15 +30,14 @@ def run(root, code): # Creates a bash file code and runs it
     bash_args = ["bash", bash_file_path]
     if args.run != "run":
         bash_args.append(args.run)
-    for arg in args.arg:
-        bash_args.append(arg)
-    if root:
-        bash_args.insert(0, root_command)
+    if args.arg is not None:
+        for arg in args.arg:
+            bash_args.append(arg)
 
-    subp = subprocess.run(bash_args, stderr=sys.stderr)
+    subp = subprocess.run(bash_args, stderr=subprocess.PIPE, stdout=sys.stdout)
     sys.exit(subp.returncode)
 
-if args.rootstdin:
+if os.geteuid() == 0:
     time.sleep(0.1)
     run(True, sys.stdin.read())
 
@@ -57,16 +52,20 @@ elif args.run in run_args:
         deps_root = root_command + " "
         if script.metadata.root:
             deps_root = ""
-        code = f"{code}{deps_root}dnf install -y {' '.join(script.metadata.dependencies)}\n\n"
+        code = f"{code}{deps_root}dnf install -y {' '.join(script.metadata.dependencies)} || exit $?\n\n"
 
-    code = code + bash_code
+        code = code + bash_code
 
     if script.metadata.root:
         sp = subprocess.Popen(
-            sys.argv + ["--rootstdin"],
-            stdin=subprocess.PIPE
+            [root_command] + sys.argv + ["--rootstdin"],
+            stdin=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdout=sys.stdout
         )
         sp.communicate(input=bytes(code, "utf-8"))
+        sp.wait()
+        sys.exit(sp.returncode)
     else:
         run(False, code)
 
