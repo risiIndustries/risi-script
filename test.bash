@@ -1,5 +1,5 @@
 #sudo rm /usr/lib64/python3.10/site-packages/risiscript.py
-sudo rm /bin/risi-script-run
+sudo rm -rf /bin/risi-script-run
 sudo rm -rf /usr/share/risi-script-gtk
 sudo rm /usr/share/glib-2.0/schemas/io.risi.script.gschema.xml
 
