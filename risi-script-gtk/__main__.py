@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import subprocess
 import sys
 import risiscript
 import gi
@@ -43,7 +44,6 @@ class ScriptWindow:
         self.gui.get_object("titlebar").set_title("risiScript - " + self.script.metadata.name)
 
         self.bash_pulse = False
-        self.dep_pulse = False
         self.checks_pulse = False
 
         # Page 1 (Page showing the code)
@@ -234,23 +234,6 @@ class ScriptWindow:
                     return False
         return True
 
-    def run_dep_in_terminal(self):
-        self.progressbar.set_text("Installing Dependencies")
-        self.dep_pulse = True
-
-        self.terminal.spawn_async(
-            Vte.PtyFlags.DEFAULT,
-            os.environ['HOME'],
-            ["pkexec", "risi-script-run", "deps"] + list(self.script.metadata.dependencies),
-            [],
-            GLib.SpawnFlags.DEFAULT,
-            None, None,
-            -1,
-            self.terminal_cancellable,
-            None,
-            None
-        )
-
     def run_bash_in_terminal(self):
         self.bash_pulse = True
         self.progressbar.set_text("Running Bash")
@@ -282,24 +265,6 @@ class ScriptWindow:
         if self.bash_pulse:
             self.bash_done(terminal, status)
 
-    def deps_done(self, terminal, status):
-        if status != 0:
-            dialog = Gtk.MessageDialog(
-                transient_for=self.window,
-                flags=0,
-                message_type=Gtk.MessageType.ERROR,
-                buttons=Gtk.ButtonsType.OK,
-                text="Error: package manager exit code not 0",
-            )
-            dialog.format_secondary_text(
-                "Dependencies failed to install"
-            )
-            dialog.run()
-            Gtk.main_quit()
-        self.dep_pulse = False
-        self.progressbar.set_fraction(0)
-        self.run_bash_in_terminal()
-
     def bash_done(self, terminal, status):
         if status != 0:
             dialog = Gtk.MessageDialog(
@@ -313,16 +278,34 @@ class ScriptWindow:
                 "The bash script has ran, but not successfully"
             )
             dialog.run()
-            Gtk.main_quit()
+        elif hasattr(self.script, "reboot") and self.script.reboot:
+            dialog = Gtk.MessageDialog(
+                transient_for=self.window,
+                flags=0,
+                message_type=Gtk.MessageType.ERROR,
+                text="Reboot Required.",
+            )
+            dialog.format_secondary_text(
+                "This script requires a reboot.\nWould you like to reboot now?"
+            )
+            dialog.add_buttons(
+                "Reboot now",
+                Gtk.ResponseType.YES,
+                "Reboot later",
+                Gtk.ResponseType.NO
+            )
+            if dialog.run() == Gtk.ResponseType.YES:
+                subprocess.run(["gnome-session-quit" "--reboot"])
 
         self.bash_pulse = False
         self.checks_pulse = True
         self.run_cancel_dialog.destroy()
         self.back_btn.set_sensitive(False)
         self.progressbar.set_fraction(0)
+        Gtk.main_quit()
 
     def pulse_threading(self):
-        while self.bash_pulse or self.dep_pulse:
+        while self.bash_pulse:
             GLib.idle_add(lambda: self.progressbar.pulse())
             time.sleep(0.1)
         while self.checks_pulse is True:

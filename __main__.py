@@ -106,11 +106,8 @@ if [ $1 = "remove" ]; then\n
 fi"""
 
         else:
-            #try:
             run_args = []
             run_args = self.get_args("run", 1)
-            # except (TypeError, AttributeError):
-            #    run_args = []
 
             bash = f"""{newline.join(run_args)}\n
 {self.parsed_code["run"]["bash"]}"""

@@ -9,7 +9,6 @@ import time
 import risiscript
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument("--rootstdin", action="store_true")
 arg_parser.add_argument("--run", type=str, action="store")
 arg_parser.add_argument("--file", type=str, action="store")
 arg_parser.add_argument("--gui", action="store_true")
@@ -21,6 +20,7 @@ run_args = ["run", "install", "update", "remove"]
 root_command = "/bin/sudo"
 if args.gui:
     root_command = "/bin/pkexec"
+
 
 def run(root, code): # Creates a bash file code and runs it
     bash_file_path = tempfile.mkstemp()[1]
@@ -35,12 +35,12 @@ def run(root, code): # Creates a bash file code and runs it
             bash_args.append(arg)
 
     subp = subprocess.run(bash_args, stderr=subprocess.PIPE, stdout=sys.stdout)
-    sys.exit(subp.returncode)
+    return subp.returncode
+
 
 if os.geteuid() == 0:
     time.sleep(0.1)
-    run(True, sys.stdin.read())
-
+    sys.exit(run(True, sys.stdin.read()))
 elif args.run in run_args:
     with open(args.file, "r") as file:
         script = risiscript.Script(file.read())
@@ -65,7 +65,18 @@ elif args.run in run_args:
         )
         sp.communicate(input=bytes(code, "utf-8"))
         sp.wait()
-        sys.exit(sp.returncode)
+        return_code = sp.returncode
     else:
-        run(False, code)
+        return_code = run(False, code)
 
+    reboot = False
+    if hasattr(script, "reboot"):
+        reboot = script.reboot and args.gui and return_code == 0
+    if reboot:
+        reboot_question = input("This script requires a reboot. Would you like to reboot now? (y/n)\n")
+        if reboot_question.lower() == "yes" or reboot_question.lower() == "y":
+            subprocess.run(["reboot", "now"])
+        else:
+            print("Not rebooting")
+
+    sys.exit(return_code)

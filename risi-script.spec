@@ -1,6 +1,6 @@
 Name:           risi-script
 Version:        1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        risiOS's way of giving GUIs to bash scripts
 
 License:        GPL v3
@@ -31,6 +31,7 @@ Gtk client for .risisc (.yml) risi script files
 mkdir -p %{buildroot}%{python3_sitelib}
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/glib-2.0/schemas
+mkdir -p %{buildroot}%{_datadir}/risi-script/scripts
 mkdir -p %{buildroot}%{_datadir}/risi-script-gtk/
 
 install -m 0755 __main__.py %{buildroot}%{python3_sitelib}/risi-script.py
@@ -42,6 +43,9 @@ install -m 0755 risi-script-gtk/risi-script-gtk.ui %{buildroot}%{_datadir}/risi-
 %files
 # %license add-license-file-here
 # %doc add-docs-here
+%{_datadir}/risi-script
+%{_datadir}/risi-script/scripts
+
 %{python3_sitelib}/risi-script.py
 %{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.opt-1.pyc
 %{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.pyc
