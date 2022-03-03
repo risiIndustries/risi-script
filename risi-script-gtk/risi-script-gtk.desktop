@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=risi-script-gtk
+Comment=Creates GUIs for bash scripts
+Icon=text-x-script
+Exec=risi-script-gtk %f
+Categories=GTK;Utility;
+MimeType=application/x-risisc;
+NoDisplay=true
