@@ -22,10 +22,10 @@ if args.gui:
     root_command = "/bin/pkexec"
 
 
-def run(root, code): # Creates a bash file code and runs it
+def run(rcode):  # Creates a bash file code and runs it
     bash_file_path = tempfile.mkstemp()[1]
-    with open(bash_file_path, "w") as file:
-        file.write(code)
+    with open(bash_file_path, "w") as f:
+        f.write(rcode)
 
     bash_args = ["bash", bash_file_path]
     if args.run != "run":
@@ -40,7 +40,7 @@ def run(root, code): # Creates a bash file code and runs it
 
 if os.geteuid() == 0:
     time.sleep(0.1)
-    sys.exit(run(True, sys.stdin.read()))
+    sys.exit(run(sys.stdin.read()))
 elif args.run in run_args:
     with open(args.file, "r") as file:
         script = risiscript.Script(file.read())
@@ -58,7 +58,7 @@ elif args.run in run_args:
 
     if script.metadata.root:
         sp = subprocess.Popen(
-            [root_command] + sys.argv + ["--rootstdin"],
+            [root_command] + sys.argv,
             stdin=subprocess.PIPE,
             stderr=subprocess.PIPE,
             stdout=sys.stdout
@@ -67,7 +67,7 @@ elif args.run in run_args:
         sp.wait()
         return_code = sp.returncode
     else:
-        return_code = run(False, code)
+        return_code = run(code)
 
     reboot = False
     if hasattr(script, "reboot"):

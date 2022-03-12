@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+import argparse
 import os
 import subprocess
-import sys
 import risiscript
 import gi
 import time
@@ -14,9 +14,14 @@ from gi.repository import Gtk, GLib, Vte, Gio
 
 saved_data = Gio.Settings.new("io.risi.script")
 
-if len(sys.argv) >= 2:
-    if not os.path.isfile(sys.argv[1]):
-        print(f"File, {sys.argv[1]} doesn't exist")
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("--trusted", action="store_true")
+arg_parser.add_argument("--file", type=str, action="store")
+parsed_args = arg_parser.parse_args()
+
+if parsed_args.file:
+    if not os.path.isfile(parsed_args.file):
+        print(f"File, {parsed_args.file} doesn't exist")
         exit()
 else:
     print("Please provide risi-script file")
@@ -34,7 +39,7 @@ class ScriptWindow:
         self.stack = self.gui.get_object("pages")
 
         # Load Script
-        with open(sys.argv[1], "r") as file:
+        with open(parsed_args.file, "r") as file:
             self.script = risiscript.Script(file.read())
 
         if self.script.installation_mode:
@@ -46,8 +51,23 @@ class ScriptWindow:
         self.bash_pulse = False
         self.checks_pulse = False
 
-        # Page 1 (Page showing the code)
-        self.gui.get_object("textview").get_buffer().set_text(self.script.code)
+        # Initial Page
+
+        if self.script.metadata.dependencies:
+            formatted_deps = "\n  - " + "\n  - ".join(self.script.metadata.dependencies)
+        else:
+            formatted_deps = "None"
+        if parsed_args.trusted:
+            self.gui.get_object("warning").destroy()
+        self.gui.get_object("name").set_markup(f"<b>{self.script.metadata.name}</b> ({self.script.metadata.id})")
+        self.gui.get_object("description").set_label(self.script.metadata.description)
+        self.gui.get_object("properties").set_markup(f"""<b>Properties:</b>
+  <b>Requires Root/Admin: </b>{str(self.script.metadata.root)}
+  <b>Requires Reboot: </b>{str(self.script.metadata.reboot)}
+  <b>One Time Use: </b>{str(self.script.metadata.one_time_use)}
+  <b>Dependencies: </b>{formatted_deps}
+  <b>risiScript Version:  </b>{str(self.script.metadata.risiscript_version)}
+""")
 
         # Already installed page
         if self.script.installation_mode and self.script.can_update:
@@ -239,7 +259,7 @@ class ScriptWindow:
         self.progressbar.set_text("Running Bash")
         args = [
             "/bin/risi-script-run", "--gui",
-            "--file", f"{os.getcwd()}/{sys.argv[1]}",
+            "--file", f"{os.getcwd()}/{parsed_args.file}",
             "--run", self.run
         ]
 
@@ -333,7 +353,6 @@ class ScriptWindow:
 
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
-                print("done")
 
     def check_dialog(self):
         dialog = Gtk.MessageDialog(
@@ -375,7 +394,6 @@ class ScriptWindow:
                 self.run = "remove"
             elif button == self.gui.get_object("update_button"):
                 self.run = "update"
-            print(self.run)
             self.args_page()
             self.next_btn.set_sensitive(True)
 
