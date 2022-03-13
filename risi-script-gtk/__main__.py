@@ -286,6 +286,7 @@ class ScriptWindow:
             self.bash_done(terminal, status)
 
     def bash_done(self, terminal, status):
+        print(0)
         if status != 0:
             dialog = Gtk.MessageDialog(
                 transient_for=self.window,
@@ -298,7 +299,7 @@ class ScriptWindow:
                 "The bash script has ran, but not successfully"
             )
             dialog.run()
-        elif hasattr(self.script, "reboot") and self.script.reboot:
+        elif hasattr(self.script.metadata, "reboot") and self.script.metadata.reboot:
             dialog = Gtk.MessageDialog(
                 transient_for=self.window,
                 flags=0,
@@ -315,14 +316,14 @@ class ScriptWindow:
                 Gtk.ResponseType.NO
             )
             if dialog.run() == Gtk.ResponseType.YES:
-                subprocess.run(["gnome-session-quit" "--reboot"])
+                subprocess.run(["gnome-session-quit", "--reboot"])
+            dialog.destroy()
 
         self.bash_pulse = False
         self.checks_pulse = True
         self.run_cancel_dialog.destroy()
         self.back_btn.set_sensitive(False)
         self.progressbar.set_fraction(0)
-        Gtk.main_quit()
 
     def pulse_threading(self):
         while self.bash_pulse:
