@@ -52,8 +52,8 @@ cp risi-script-gtk/risi-script-gtk.desktop %{buildroot}%{_datadir}/applications
 %{_datadir}/risi-script/scripts
 
 %{python3_sitelib}/risiscript.py
-%{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.opt-1.pyc
-%{python3_sitelib}/__pycache__/risi-script.cpython-%{python3_version_nodots}.pyc
+%{python3_sitelib}/__pycache__/risiscript.cpython-%{python3_version_nodots}.opt-1.pyc
+%{python3_sitelib}/__pycache__/risiscript.cpython-%{python3_version_nodots}.pyc
 %{_bindir}/risi-script-run
 %{_datadir}/glib-2.0/schemas/io.risi.script.gschema.xml
 %{_datadir}/mime/packages/application-x-risisc.xml
