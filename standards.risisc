@@ -31,6 +31,10 @@ install: # Requires remove function
       - BOOLEAN
       - "Toggle this"
       - True
+    warning:
+      - WARNING
+      - "Warning"
+      - "This is a warning description"
     bash: |
       echo "hello world"
     checks: # use $varname to access variable
