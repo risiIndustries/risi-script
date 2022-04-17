@@ -348,6 +348,7 @@ class ScriptWindow:
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
 
+
     def check_dialog(self):
         dialog = Gtk.MessageDialog(
             transient_for=self.window,

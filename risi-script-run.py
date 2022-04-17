@@ -75,7 +75,7 @@ elif args.run in run_args:
     if reboot:
         reboot_question = input("This script requires a reboot. Would you like to reboot now? (y/n)\n")
         if reboot_question.lower() == "yes" or reboot_question.lower() == "y":
-            subprocess.run(["reboot", "now"])
+            subprocess.run(["reboot", "now"], stdout=sys.stdout)
         else:
             print("Not rebooting")
 
