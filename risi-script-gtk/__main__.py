@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 import argparse
 import os
 import subprocess
@@ -162,11 +162,22 @@ class ScriptWindow:
                 outputs[arg] = self.arguments[arg].output()
         return outputs
 
+    def skip_args(self):
+        args = []
+        if self.script.arguments:
+            for arg in self.script.arguments[self.run]:
+                if (
+                        not self.script.arguments[self.run][arg] == "DESCRIPTION" and
+                        not self.script.arguments[self.run][arg] == "WARNING"
+                ):
+                    args.append(arg)
+        return not args == []
+
     def args_page(self):
-        if self.script.arguments[self.run] is None:
+        self.generate_argument_widgets()
+        if self.skip_args():
             self.go_to_run_page()
         else:
-            self.generate_argument_widgets()
             self.stack.set_visible_child_name("args")
 
     def back_button_pressed(self, button):
@@ -259,7 +270,7 @@ class ScriptWindow:
         self.progressbar.set_text("Running Bash")
         args = [
             "/bin/risi-script-run", "--gui",
-            "--file", f"{os.getcwd()}/{parsed_args.file}",
+            "--file", parsed_args.file,
             "--run", self.run
         ]
 
@@ -299,31 +310,13 @@ class ScriptWindow:
                 "The bash script has ran, but not successfully"
             )
             dialog.run()
-        elif hasattr(self.script.metadata, "reboot") and self.script.metadata.reboot:
-            dialog = Gtk.MessageDialog(
-                transient_for=self.window,
-                flags=0,
-                message_type=Gtk.MessageType.ERROR,
-                text="Reboot Required.",
-            )
-            dialog.format_secondary_text(
-                "This script requires a reboot.\nWould you like to reboot now?"
-            )
-            dialog.add_buttons(
-                "Reboot now",
-                Gtk.ResponseType.YES,
-                "Reboot later",
-                Gtk.ResponseType.NO
-            )
-            if dialog.run() == Gtk.ResponseType.YES:
-                subprocess.run(["gnome-session-quit", "--reboot"])
-            dialog.destroy()
-
-        self.bash_pulse = False
-        self.checks_pulse = True
-        self.run_cancel_dialog.destroy()
-        self.back_btn.set_sensitive(False)
-        self.progressbar.set_fraction(0)
+            Gtk.main_quit()
+        else:
+            self.bash_pulse = False
+            self.checks_pulse = True
+            self.run_cancel_dialog.destroy()
+            self.back_btn.set_sensitive(False)
+            self.progressbar.set_fraction(0)
 
     def pulse_threading(self):
         while self.bash_pulse:
@@ -364,6 +357,26 @@ class ScriptWindow:
             text="Script ran successfully",
         )
         dialog.run()
+
+        if hasattr(self.script.metadata, "reboot") and self.script.metadata.reboot:
+            dialog = Gtk.MessageDialog(
+                transient_for=self.window,
+                flags=0,
+                message_type=Gtk.MessageType.ERROR,
+                text="Reboot Required.",
+            )
+            dialog.format_secondary_text(
+                "This script requires a reboot.\nWould you like to reboot now?"
+            )
+            dialog.add_buttons(
+                "Reboot now",
+                Gtk.ResponseType.YES,
+                "Reboot later",
+                Gtk.ResponseType.NO
+            )
+            if dialog.run() == Gtk.ResponseType.YES:
+                subprocess.run(["gnome-session-quit", "--reboot"])
+            dialog.destroy()
         Gtk.main_quit()
 
     def failed_dialog(self, e):
@@ -419,8 +432,8 @@ class WarningDialog:
 
     def run(self):
         self.dialog.show_all()
-        self.dialog.run()
-        if self.dialog == Gtk.ResponseType.NO:
+        response = self.dialog.run()
+        if self.dialog.response == Gtk.ResponseType.NO:
             Gtk.main_quit()
         self.dialog.destroy()
 

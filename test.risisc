@@ -8,7 +8,7 @@ metadata:
   root: False
   one_time_use: True
   risiscript_version: 1.0
-  reboot: False
+  reboot: True
 
 run: # Conflicts with install function
   init:
