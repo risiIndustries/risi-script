@@ -348,7 +348,6 @@ class ScriptWindow:
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
 
-
     def check_dialog(self):
         dialog = Gtk.MessageDialog(
             transient_for=self.window,
@@ -434,7 +433,7 @@ class WarningDialog:
     def run(self):
         self.dialog.show_all()
         response = self.dialog.run()
-        if self.dialog.response == Gtk.ResponseType.NO:
+        if response == Gtk.ResponseType.NO:
             Gtk.main_quit()
         self.dialog.destroy()
 
