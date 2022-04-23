@@ -339,16 +339,17 @@ class ScriptWindow:
             else:
                 GLib.idle_add(lambda: self.progressbar.set_text("Done"))
                 self.checks_pulse = False
-                installed_list = saved_data.get_strv("installed-scripts")
-
-                if self.script.metadata.id not in installed_list and self.script.installation_mode:
-                    installed_list.append(self.script.metadata.id)
-                    GLib.idle_add(lambda: saved_data.set_strv("installed-scripts", installed_list))
 
                 GLib.idle_add(lambda: self.progressbar.set_fraction(100))
                 GLib.idle_add(self.check_dialog)
 
     def check_dialog(self):
+        installed_list = saved_data.get_strv("installed-scripts")
+
+        if self.script.metadata.id not in installed_list and self.script.installation_mode:
+            installed_list.append(self.script.metadata.id)
+            lambda: saved_data.set_strv("installed-scripts", installed_list)
+
         dialog = Gtk.MessageDialog(
             transient_for=self.window,
             flags=0,
