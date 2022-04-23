@@ -9,7 +9,6 @@ newline = "\n"
 indent = "    "
 saved_data = Gio.Settings.new("io.risi.script")
 
-
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
     pass
@@ -147,7 +146,6 @@ fi"""
                 if subproc.returncode != 0:
                     raise RisiScriptFailedCheckError(f"command '{args[0]}' threw error:\n{subproc.stderr}")
                 elif list(item.keys())[0] == "COMMANDOUTPUT" and args[1] != subproc.stdout:
-                    print("meme")
                     raise RisiScriptFailedCheckError(f"string '{args[1]}' doesn't match output of '{args[0]}'")
                 elif list(item.keys())[0] == "COMMANDOUTPUTCONTAINS" and args[1] not in subproc.stdout:
                     raise RisiScriptFailedCheckError(f"string '{args[1]}' doesn't contain output of '{args[0]}'")

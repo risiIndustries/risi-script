@@ -142,7 +142,6 @@ class ScriptWindow:
                     ](*[self] + script_args[self.run][arg])  # Passes YAML data as args for the class
                     if not isinstance(self.arguments[arg], WarningDialog):
                         box.add(self.arguments[arg])
-                        self.arguments[arg].show_all()
 
     def generate_arguments(self):
         args = []
@@ -171,13 +170,14 @@ class ScriptWindow:
                         not self.script.arguments[self.run][arg] == "WARNING"
                 ):
                     args.append(arg)
-        return not args == []
+        return args == []
 
     def args_page(self):
         self.generate_argument_widgets()
         if self.skip_args():
             self.go_to_run_page()
         else:
+            self.stack.show_all()
             self.stack.set_visible_child_name("args")
 
     def back_button_pressed(self, button):
@@ -281,7 +281,7 @@ class ScriptWindow:
 
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
-            os.environ['HOME'],
+            os.getcwd(),
             args,
             [],
             GLib.SpawnFlags.DEFAULT,
@@ -297,7 +297,6 @@ class ScriptWindow:
             self.bash_done(terminal, status)
 
     def bash_done(self, terminal, status):
-        print(0)
         if status != 0:
             dialog = Gtk.MessageDialog(
                 transient_for=self.window,

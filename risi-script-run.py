@@ -10,7 +10,7 @@ import risiscript
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("--run", type=str, action="store")
-arg_parser.add_argument("--file", type=str, action="store")
+arg_parser.add_argument("--file", type=argparse.FileType('r'))
 arg_parser.add_argument("--gui", action="store_true")
 arg_parser.add_argument("--arg", action="append")
 args = arg_parser.parse_args()
@@ -42,8 +42,7 @@ if os.geteuid() == 0:
     time.sleep(0.1)
     sys.exit(run(sys.stdin.read()))
 elif args.run in run_args:
-    with open(args.file, "r") as file:
-        script = risiscript.Script(file.read())
+    script = risiscript.Script(args.file.read())
 
     bash_code = script.code_to_script()
     code = "#!/bin/bash\n"
@@ -54,7 +53,7 @@ elif args.run in run_args:
             deps_root = ""
         code = f"{code}{deps_root}dnf install -y {' '.join(script.metadata.dependencies)} || exit $?\n\n"
 
-        code = code + bash_code
+    code = code + bash_code
 
     if script.metadata.root:
         sp = subprocess.Popen(
