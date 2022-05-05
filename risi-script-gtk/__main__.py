@@ -255,7 +255,7 @@ class ScriptWindow:
         pulse_thread.start()
 
     def check_args(self):
-        if self.script.arguments:
+        if self.script.arguments[self.run]:
             for arg in self.script.arguments[self.run]:
                 if (
                         self.arguments[arg].output() is None and
