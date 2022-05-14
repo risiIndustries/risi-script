@@ -299,32 +299,46 @@ Are you sure you want to continue?</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="args">
+          <object class="GtkScrolledWindow" id="arg_page">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="orientation">vertical</property>
+            <property name="can-focus">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="shadow-type">in</property>
             <child>
-              <object class="GtkLabel" id="arg_label">
+              <object class="GtkViewport">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">start</property>
-                <property name="margin-start">10</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
-                <property name="label" translatable="yes">&lt;b&gt;Please specify arguments:&lt;/b&gt;</property>
-                <property name="use-markup">True</property>
+                <child>
+                  <object class="GtkBox" id="args">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="arg_label">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">start</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-top">10</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Please specify arguments:&lt;/b&gt;</property>
+                        <property name="use-markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
           </object>
           <packing>
-            <property name="name">args</property>
-            <property name="title" translatable="yes">Arguments</property>
+            <property name="name">arg_page</property>
+            <property name="title" translatable="yes">Running Script</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -357,12 +371,9 @@ Are you sure you want to continue?</property>
           </object>
           <packing>
             <property name="name">run_page</property>
-            <property name="title" translatable="yes">Running Script</property>
+            <property name="title" translatable="yes">Run</property>
             <property name="position">4</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>

@@ -163,7 +163,7 @@ class ScriptWindow:
 
     def skip_args(self):
         args = []
-        if self.script.arguments:
+        if self.script.arguments[self.run]:
             for arg in self.script.arguments[self.run]:
                 if (
                         not self.script.arguments[self.run][arg] == "DESCRIPTION" and
@@ -178,12 +178,12 @@ class ScriptWindow:
             self.go_to_run_page()
         else:
             self.stack.show_all()
-            self.stack.set_visible_child_name("args")
+            self.stack.set_visible_child_name("arg_page")
 
     def back_button_pressed(self, button):
         if self.stack.get_visible_child_name() == "script_info":
             Gtk.main_quit()
-        elif self.stack.get_visible_child_name() == "args":
+        elif self.stack.get_visible_child_name() == "arg_page":
             if self.script.installed:
                 if self.script.installation_mode:
                     self.stack.set_visible_child_name("already_installed")
@@ -218,7 +218,7 @@ class ScriptWindow:
             else:
                 self.args_page()
 
-        elif self.stack.get_visible_child_name() == "args":
+        elif self.stack.get_visible_child_name() == "arg_page":
             if not self.check_args():
                 dialog = Gtk.MessageDialog(
                     transient_for=self.window,

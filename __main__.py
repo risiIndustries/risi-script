@@ -9,6 +9,7 @@ newline = "\n"
 indent = "    "
 saved_data = Gio.Settings.new("io.risi.script")
 
+
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
     pass
