@@ -1,6 +1,6 @@
 Name:           risi-script
 Version:        1.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        risiOS's way of giving GUIs to bash scripts
 
 License:        GPL v3

@@ -521,6 +521,7 @@ class ArgChoice(Argument):
         self.combo = Gtk.ComboBoxText()
         for choice in choices:
             self.combo.append_text(choice)
+        self.combo.set_active(0)
         self.add_widget(self.combo)
 
     def output(self):
