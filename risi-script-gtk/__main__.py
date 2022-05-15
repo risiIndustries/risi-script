@@ -150,6 +150,7 @@ class ScriptWindow:
             for arg in self.script.arguments[self.run]:
                 if (
                         not isinstance(self.arguments[arg], Description) and
+                        not isinstance(self.arguments[arg], Title) and
                         not isinstance(self.arguments[arg], WarningDialog)
                 ):
                     args.append(self.arguments[arg].output())
@@ -168,6 +169,7 @@ class ScriptWindow:
             for arg in self.script.arguments[self.run]:
                 if (
                         not self.script.arguments[self.run][arg] == "DESCRIPTION" and
+                        not self.script.arguments[self.run][arg] == "TITLE" and
                         not self.script.arguments[self.run][arg] == "WARNING"
                 ):
                     args.append(arg)
@@ -261,6 +263,7 @@ class ScriptWindow:
                 if (
                         self.arguments[arg].output() is None and
                         not isinstance(self.arguments[arg], Description) and
+                        not isinstance(self.arguments[arg], Title) and
                         not isinstance(self.arguments[arg], WarningDialog)
                 ):
                     return False
@@ -462,6 +465,15 @@ class Argument(Gtk.Box):
         return None
 
 
+class Title(Argument):
+    def __init__(self, window, arg_label):
+        Argument.__init__(self, window, arg_label)
+        self.label.set_markup("<b>" + arg_label + "</b>")
+
+    def output(self):
+        return None
+
+
 class Description(Argument):
     def __init__(self, window, arg_label):
         Argument.__init__(self, window, arg_label)
@@ -521,8 +533,8 @@ class ArgChoice(Argument):
         self.combo = Gtk.ComboBoxText()
         for choice in choices:
             self.combo.append_text(choice)
-        self.combo.set_active(0)
         self.add_widget(self.combo)
+        self.combo.set_active(0)
 
     def output(self):
         return self.combo.get_active_text()
@@ -540,6 +552,7 @@ class ArgBoolean(Argument):
 
 
 args_to_class = {
+    "TITLE": Title,
     "DESCRIPTION": Description,
     "WARNING": WarningDialog,
     "ENTRY": ArgEntry,
