@@ -19,4 +19,6 @@ sudo cp io.risi.script.gschema.xml /usr/share/glib-2.0/schemas/io.risi.script.gs
 sudo chmod +x /bin/risi-script-run
 sudo chmod +x /bin/risi-script-gtk
 
-python3 risi-script-gtk/__main__.py --file test.risisc
+# python3 risi-script-gtk/__main__.py --file test.risisc
+risi-script-gtk --file test.risisc
+# risi-script-gtk --file /home/cameron/Documents/risi-welcome/usr/share/risiWelcome/scripts/quicksetup/graphicdesign.risisc

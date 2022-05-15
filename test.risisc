@@ -5,7 +5,7 @@ metadata:
   description: "Basic test script, used for development. Do not run."
   dependencies: # Just put None for no dependencies
     None
-  root: False
+  root: True
   one_time_use: True
   risiscript_version: 1.0
   reboot: False

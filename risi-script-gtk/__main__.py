@@ -41,6 +41,7 @@ class ScriptWindow:
         # Load Script
         with open(parsed_args.file, "r") as file:
             self.script = risiscript.Script(file.read())
+            self.file_location = os.path.realpath(file.name)
 
         if self.script.installation_mode:
             self.run = "install"
@@ -270,7 +271,7 @@ class ScriptWindow:
         self.progressbar.set_text("Running Bash")
         args = [
             "/bin/risi-script-run", "--gui",
-            "--file", parsed_args.file,
+            "--file", self.file_location,
             "--run", self.run
         ]
 
@@ -278,7 +279,6 @@ class ScriptWindow:
             for arg in self.generate_arguments():
                 args.append("--arg")
                 args.append(str(arg))
-
         self.terminal.spawn_async(
             Vte.PtyFlags.DEFAULT,
             os.getcwd(),
