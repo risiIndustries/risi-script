@@ -5,7 +5,7 @@ metadata:
   description: "Basic test script, used for development. Do not run."
   dependencies: # Just put None for no dependencies
     None
-  root: True
+  root: False
   one_time_use: True
   risiscript_version: 1.0
   reboot: False
@@ -25,6 +25,7 @@ run: # Conflicts with install function
       - "This is a warning description"
   bash: |
     echo "hello world"
+    pwd
     sleep 3
   checks: # use $varname to access variable
     - COMMANDOUTPUTCONTAINS:
