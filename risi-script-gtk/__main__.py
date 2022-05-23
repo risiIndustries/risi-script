@@ -168,9 +168,9 @@ class ScriptWindow:
         if self.script.arguments[self.run]:
             for arg in self.script.arguments[self.run]:
                 if (
-                        not self.script.arguments[self.run][arg] == "DESCRIPTION" and
-                        not self.script.arguments[self.run][arg] == "TITLE" and
-                        not self.script.arguments[self.run][arg] == "WARNING"
+                        not self.script.arguments[self.run][arg][0] == "DESCRIPTION" and
+                        not self.script.arguments[self.run][arg][0] == "TITLE" and
+                        not self.script.arguments[self.run][arg][0] == "WARNING"
                 ):
                     args.append(arg)
         return args == []

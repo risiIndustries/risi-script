@@ -9,6 +9,7 @@ metadata:
   root: True
   one_time_use: True
   risiscript_version: 1.0
+  reboot: False
 
 run:
   init:

@@ -12,13 +12,6 @@ metadata:
 
 run: # Conflicts with install function
   init:
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - True
-    description:
-      - DESCRIPTION
-      - "This is a description"
     warning:
       - WARNING
       - "Warning"
