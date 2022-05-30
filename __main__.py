@@ -158,7 +158,7 @@ fi"""
         if self.arguments[run] is not None:
             for key in self.arguments[run].keys():
                 var_type = self.arguments[run][key][0]
-                if var_type != "WARNING" and var_type != "DESCRIPTION":
+                if var_type not in ["WARNING", "DESCRIPTION", "TITLE"]:
                     args.append(str(key) + "=${" + str(key_index) + "}")
                     key_index += 1
         return args
