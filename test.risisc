@@ -19,8 +19,8 @@ run: # Conflicts with install function
   bash: |
     echo "hello world"
     pwd
-    sleep 3
+    sleep 10
   checks: # use $varname to access variable
     - COMMANDOUTPUTCONTAINS:
-      - "echo $boolean_var"
+      - "echo True"
       - "True"

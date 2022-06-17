@@ -8,6 +8,8 @@ import time
 
 import risiscript
 
+runfile = f"{tempfile.gettempdir()}/risi-script-running"
+
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument("--run", type=str, action="store")
 arg_parser.add_argument("--file", type=argparse.FileType('r'))
@@ -20,6 +22,15 @@ run_args = ["run", "install", "update", "remove"]
 root_command = "/bin/sudo"
 if args.gui:
     root_command = "/bin/pkexec"
+
+
+def wait():
+    if os.path.exists(runfile):
+        print("Another risiScript file is currently running...\nTrying again in 10 seconds.")
+        time.sleep(10)
+        wait()
+    else:
+        fp = open(runfile, 'a').close()  # Create blank file
 
 
 def run(rcode):  # Creates a bash file code and runs it
@@ -42,6 +53,7 @@ if os.geteuid() == 0:
     time.sleep(0.1)
     sys.exit(run(sys.stdin.read()))
 elif args.run in run_args:
+    wait()
     script = risiscript.Script(args.file.read())
 
     bash_code = script.code_to_script()
@@ -78,4 +90,6 @@ elif args.run in run_args:
         else:
             print("Not rebooting")
 
+    if os.path.exists(runfile):
+        os.remove(runfile)
     sys.exit(return_code)
