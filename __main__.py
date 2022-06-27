@@ -153,6 +153,15 @@ fi"""
             if pulse_function is not None:
                 pulse_function()
 
+        if self.installation_mode and parent == "install":
+            installed_list = saved_data.get_strv("installed-scripts")
+            installed_list.append(self.metadata.id)
+            saved_data.set_strv("installed-scripts", installed_list)
+        elif self.installation_mode and parent == "remove":
+            installed_list = saved_data.get_strv("installed-scripts")
+            installed_list.remove(self.metadata.id)
+            saved_data.set_strv("installed-scripts", installed_list)
+
     def get_args(self, run, key_index):
         args = []
         if self.arguments[run] is not None:

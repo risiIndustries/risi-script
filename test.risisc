@@ -10,7 +10,23 @@ metadata:
   risiscript_version: 1.0
   reboot: False
 
-run: # Conflicts with install function
+install: # Conflicts with install function
+  init:
+    warning:
+      - WARNING
+      - "Warning"
+      - "This is a warning description"
+  bash: |
+    echo "hello world"
+    pwd
+    sleep 10
+  checks: # use $varname to access variable
+    - COMMANDOUTPUTCONTAINS:
+      - "echo True"
+      - "True"
+
+
+remove: # Conflicts with install function
   init:
     warning:
       - WARNING

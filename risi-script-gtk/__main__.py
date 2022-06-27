@@ -348,9 +348,6 @@ class ScriptWindow:
     def check_dialog(self):
         installed_list = saved_data.get_strv("installed-scripts")
 
-        if self.script.metadata.id not in installed_list and self.script.installation_mode:
-            installed_list.append(self.script.metadata.id)
-            lambda: saved_data.set_strv("installed-scripts", installed_list)
 
         dialog = Gtk.MessageDialog(
             transient_for=self.window,
