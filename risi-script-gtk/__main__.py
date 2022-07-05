@@ -62,6 +62,7 @@ class ScriptWindow:
             self.gui.get_object("warning").destroy()
         self.gui.get_object("name").set_markup(f"<b>{self.script.metadata.name}</b> ({self.script.metadata.id})")
         self.gui.get_object("description").set_label(self.script.metadata.description)
+        self.gui.get_object("description").set_line_wrap(True)
         self.gui.get_object("properties").set_markup(f"""<b>Properties:</b>
   <b>Requires Root/Admin: </b>{str(self.script.metadata.root)}
   <b>Requires Reboot: </b>{str(self.script.metadata.reboot)}
@@ -476,6 +477,7 @@ class Description(Argument):
         Argument.__init__(self, window, arg_label)
         self.label.set_markup("<small>" + arg_label + "</small>")
         self.label.get_style_context().add_class('dim-label')
+        self.label.set_line_wrap(True)
         self.set_margin_top(0)
 
     def output(self):
