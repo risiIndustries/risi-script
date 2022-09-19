@@ -1,18 +1,19 @@
 #!/bin/risiscript
 metadata:
+  risiscript_version: 2.0
   name: "ScriptName"
   id: "com.example.scriptname"
   description: "Description of what the script does"
   dependencies: # Just put None for no dependencies
     - package1
     - package2
-  root: true
-  one_time_use: True
-  risiscript_version: 1.0
-  reboot: True # Optional
+  tags: [root, reboot]
 
-install: # Requires remove function
-  init:
+
+action: # Requires remove function
+  show: |  # Only shows if the exit code is 0
+    "bash here"
+  elements:
     entry_var:
       - ENTRY # Type of init var...
       - "Please enter something" # Question for user
@@ -35,160 +36,7 @@ install: # Requires remove function
       - WARNING
       - "Warning"
       - "This is a warning description"
-    bash: |
-      echo "hello world"
-    checks: # use $varname to access variable
-      - FILE:
-          - "file"
-      - FILECONTAINS:
-          - "file"
-          - "string"
-      - COMMANDOUTPUT:
-          - "bash command"
-          - "output"
-      - COMMANDOUTPUTCONTAINS:
-          - "bash command"
-          - "output"
-
-remove: # Requires remove function
-  init:
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - ".txt" # ex: "*.txt", "filename.txt". Use "*" for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - ["Choice1", "Choice2"] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - False # Default option
-  bash: |
-    echo Remove
-  checks:
-    - FILE:
-      - file
-    - FILECONTAINS:
-      - file
-      - "string"
-    - COMMANDOUTPUT:
-      - "bash command"
-      - "output"
-    - COMMANDOUTPUTCONTAINS:
-      - "echo $boolean_var"
-      - "True"
-
-remove: # Requires install function
-  init:
-    description:
-      - DESCRIPTION # Used only for GUIs, does not define a variable
-      - "Please enter something here"
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - ".txt" # ex: *.txt. Use * for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - [ "Choice1", "Choice2" ] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - True
-    bash:
-      echo "hello world"
-    checks: # use $varname to access variable
-      - FILE:
-          - "file"
-      - FILECONTAINS:
-          - "file"
-          - "string"
-      - COMMANDOUTPUT:
-          - "bash command"
-          - "output"
-      - COMMANDOUTPUTCONTAINS:
-          - "bash command"
-          - "output"
-
-update: # Requires install function, optional
-  init:
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - ".txt" # ex: *.txt. Use * for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - [ "Choice1", "Choice2" ] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - True
-    bash: |
-      echo "hello world"
-    checks: # use $varname to access variable
-      - FILE:
-          - "file"
-      - FILECONTAINS:
-          - "file"
-          - "string"
-      - COMMANDOUTPUT:
-          - "bash command"
-          - "output"
-      - COMMANDOUTPUTCONTAINS:
-          - "bash command"
-          - "output"
-
-run: # Conflicts with install function
-  init:
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - ".txt" # ex: *.txt. Use * for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - ["Choice1", "Choice2"] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - True
-  bash: |
+  run: |
     echo "hello world"
-  checks: # use $varname to access variable
-    - FILE:
-      - "file"
-    - FILECONTAINS:
-      - "file"
-      - "string"
-    - COMMANDOUTPUT:
-      - "bash command"
-      - "output"
-    - COMMANDOUTPUTCONTAINS:
-      - "bash command"
-      - "output"
+  checks: | # Check if it runs
+    ""

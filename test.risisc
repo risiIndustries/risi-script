@@ -10,6 +10,32 @@ metadata:
   risiscript_version: 1.0
   reboot: False
 
+run: # Requires remove function
+  init:
+    entry_var:
+      - ENTRY # Type of init var...
+      - "Please enter something" # Question for user
+    file_var:
+      - FILE
+      - "Please select a file" # Question for user
+      - ".txt" # ex: *.txt. Use * for any type of file
+    directory_var:
+      - DIRECTORY
+      - "Please select a directory"  # Question for user
+    choice_var:
+      - CHOICE
+      - "Please choose this" # Question for users
+      - [ "Choice1", "Choice2" ] # The choices for a user to pick
+    boolean_var:
+      - BOOLEAN
+      - "Toggle this"
+      - True
+    warning:
+      - WARNING
+      - "Warning"
+      - "This is a warning description"
+    bash: |
+      echo "hello world"
 install: # Conflicts with install function
   init:
     warning:
@@ -21,10 +47,7 @@ install: # Conflicts with install function
     pwd
     sleep 10
   checks: # use $varname to access variable
-    - COMMANDOUTPUTCONTAINS:
-      - "echo True"
-      - "True"
-
+    - "risi-script-check file exists"
 
 remove: # Conflicts with install function
   init:

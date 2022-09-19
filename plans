@@ -1,0 +1,14 @@
+Make Checks bash based
+ Implement easy checks via bash
+
+Available actions, instead of set as flags.
+ Make actions based on checks
+
+Script verification
+ Based on github repo
+
+Remove gsettings
+
+Redo GUI
+
+
