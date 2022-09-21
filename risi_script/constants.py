@@ -1,4 +1,22 @@
-#!/bin/risiscript
+elements = [
+    "TITLE",
+    "DESCRIPTION",
+    "ENTRY",
+    "FILE",
+    "DIRECTORY",
+    "CHOICE",
+    "BOOLEAN",
+    "WARNING"
+]
+
+non_interactive_elements = [
+    "TITLE",
+    "DESCRIPTION",
+    "WARNING"
+]
+
+test_code = """#!/bin/risi_script
+#!/bin/risi_script
 metadata:
   risiscript_version: 2.0
   name: "ScriptName"
@@ -12,7 +30,8 @@ metadata:
 
 action: # Requires remove function
   show: |  # Only shows if the exit code is 0
-    "bash here"
+    echo "Hello World"
+    exit 0
   elements:
     entry_var:
       - ENTRY # Type of init var...
@@ -38,5 +57,6 @@ action: # Requires remove function
       - "This is a warning description"
   run: |
     echo "hello world"
-  check: | # Check if it runs
+  checks: | # Check if it runs
     ""
+"""

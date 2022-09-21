@@ -3,64 +3,20 @@ import os
 import subprocess
 import tempfile
 import yaml
+import risi_script.constants as constants
 from gi.repository import Gio
 
 newline = "\n"
 indent = "    "
 saved_data = Gio.Settings.new("io.risi.script")
-test_code = """#!/bin/risi-script
-#!/bin/risi-script
-metadata:
-  risiscript_version: 2.0
-  name: "ScriptName"
-  id: "com.example.scriptname"
-  description: "Description of what the script does"
-  dependencies: # Just put None for no dependencies
-    - package1
-    - package2
-  tags: [root, reboot]
-
-
-action: # Requires remove function
-  show: |  # Only shows if the exit code is 0
-    echo "Hello World"
-    exit 0
-  elements:
-    entry_var:
-      - ENTRY # Type of init var...
-      - "Please enter something" # Question for user
-    file_var:
-      - FILE
-      - "Please select a file" # Question for user
-      - ".txt" # ex: *.txt. Use * for any type of file
-    directory_var:
-      - DIRECTORY
-      - "Please select a directory"  # Question for user
-    choice_var:
-      - CHOICE
-      - "Please choose this" # Question for users
-      - [ "Choice1", "Choice2" ] # The choices for a user to pick
-    boolean_var:
-      - BOOLEAN
-      - "Toggle this"
-      - True
-    warning:
-      - WARNING
-      - "Warning"
-      - "This is a warning description"
-  run: |
-    echo "hello world"
-  checks: | # Check if it runs
-    ""
-"""
-
+test_code = constants.test_code
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
     pass
 
 
 class RisiScriptFailedCheckError(Exception):
-    """Raised when a risi-script program fails a check"""
+    """Raised when a risi_script program fails a check"""
     pass
 
 
@@ -76,7 +32,7 @@ class Metadata:
 
 class Bash:
     def __init__(self, bash_code):
-        bash_file_path = tempfile.mkstemp(prefix="risi-script-", suffix=".bash")[1]
+        bash_file_path = tempfile.mkstemp(prefix="risi_script-", suffix=".bash")[1]
         with open(bash_file_path, "w") as f:
             f.write(bash_code)
         sp = subprocess.run(["bash", bash_file_path], capture_output=True)
@@ -94,21 +50,32 @@ class Script:
         self.parsed_code = yaml.safe_load(code)
         syntax_check(self.parsed_code)
         self.metadata = Metadata(self.parsed_code["metadata"])
-        self.arguments = {}
+        self.elements = {}
 
-    def code_to_script(self):  # Used to create a bash script from the risi-script file
+    def generate_script(self):  # Used to create a bash script from the risi_script file
         pass
 
     def get_elements(self, action, key_index):
-        args = []
-            if self.arguments[action] is not None:
-            for key in self.arguments[action].keys():
-                var_type = self.arguments[action][key][0]
+        elements = []
+        if "elements" in self.parsed_code[action].keys():
+            for key in self.elements[action].keys():
+                var_type = self.elements[action][key][0]
                 if var_type not in ["WARNING", "DESCRIPTION", "TITLE"]:
                     args.append(str(key) + "=${" + str(key_index) + "}")
                     key_index += 1
-        return args
+        return elements
 
+    def get_interactive_elements(self, action):
+        return [
+            x for x in self.get_elements(action)
+            if element not in constants.non_interactive_elements
+        ]
+        
+    def get_bash_arguments(self, action, key_index) -> list:
+        args = []
+        for element in self.get_interactive_elements():
+            args.append(str(key) + "=${" + str(key_index) + "}")
+            key_index += 1
 
     def get_actions(self):
         actions = []
@@ -116,7 +83,6 @@ class Script:
             if action != "metadata":
                 actions.append(action)
         return actions
-
 
     def get_available_actions(self):
         actions = []
@@ -129,7 +95,6 @@ class Script:
                 actions.append(action)
         return actions
 
-
     def check_action(self, action):
         if "checks" in self.parsed_code[action].keys():
             bash = Bash(self.parsed_code[action]["check"])
@@ -138,7 +103,6 @@ class Script:
 
 
 def syntax_check(parsed_code):
-    print(parsed_code)
     # Checking Metadata
     if "metadata" not in parsed_code.keys():
         raise RisiScriptError("file must contain metadata function")
@@ -151,12 +115,12 @@ def syntax_check(parsed_code):
     elif "tags" not in parsed_code["metadata"].keys():
         raise RisiScriptError("tags missing from metadata")
     elif "risiscript_version" not in parsed_code["metadata"].keys():
-        raise RisiScriptError("risi-script version missing from metadata")
+        raise RisiScriptError("risi_script version missing from metadata")
 
     # Checking for correct version
     elif parsed_code["metadata"]["risiscript_version"] != 2.0:
-        raise RisiScriptError("risi-script version is deprecated."
-                              "Please update your risi-script file.")
+        raise RisiScriptError("risi_script version is deprecated."
+                              "Please update your risi_script file.")
 
     # Checking for bash and checks options
     # for item in ["run", "install", "update", "remove"]:
@@ -172,4 +136,3 @@ def indent_newline(string):
     return string.replace("\n", "\n    ")
 
 s = Script(test_code)
-print(s.get_available_actions())

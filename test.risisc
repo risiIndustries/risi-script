@@ -1,4 +1,4 @@
-#!/bin/risi-script
+#!/bin/risi_script
 metadata:
   name: "Test script"
   id: "io.risi.test"
@@ -46,7 +46,7 @@ install: # Conflicts with install function
     pwd
     sleep 10
   checks: # use $varname to access variable
-    - "risi-script-check file exists"
+    - "risi_script-check file exists"
 
 remove: # Conflicts with install function
   init:

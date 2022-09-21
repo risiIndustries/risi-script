@@ -24,7 +24,7 @@ if parsed_args.file:
         print(f"File, {parsed_args.file} doesn't exist")
         exit()
 else:
-    print("Please provide risi-script file")
+    print("Please provide risi_script file")
     exit()
 
 
@@ -32,8 +32,8 @@ class ScriptWindow:
     def __init__(self):
         self.gui = Gtk.Builder()
         self.gui.add_from_file(
-            # "risi-script-gtk.ui"
-            "/usr/share/risi-script-gtk/risi-script-gtk.ui"
+            # "risi_script-gtk.ui"
+            "/usr/share/risi_script-gtk/risi_script-gtk.ui"
         )
         self.window = self.gui.get_object("window")
         self.stack = self.gui.get_object("pages")
@@ -107,7 +107,7 @@ class ScriptWindow:
             transient_for=self.window,
             flags=0,
             message_type=Gtk.MessageType.WARNING,
-            text="Are you sure you want to cancel this risi-script?",
+            text="Are you sure you want to cancel this risi_script?",
         )
         self.run_cancel_dialog.add_buttons(
             "Yes",
@@ -116,7 +116,7 @@ class ScriptWindow:
             Gtk.ResponseType.NO
         )
         self.run_cancel_dialog.format_secondary_text(
-            "This will not reverse the changes this risi-script file has already made and can be destructive."
+            "This will not reverse the changes this risi_script file has already made and can be destructive."
         )
 
         # Navigation Buttons
@@ -126,7 +126,7 @@ class ScriptWindow:
         self.next_btn = self.gui.get_object("next_btn")
         self.next_btn.connect("clicked", self.next_button_pressed)
 
-        if self.script.arguments is None:
+        if self.script.elements is None:
             self.next_btn.set_label("Confirm")
 
     def generate_argument_widgets(self):
@@ -135,8 +135,8 @@ class ScriptWindow:
         for child in box.get_children():
             if child != self.gui.get_object("arg_label"):
                 child.destroy()
-        if self.script.arguments:
-            script_args = deepcopy(self.script.arguments)
+        if self.script.elements:
+            script_args = deepcopy(self.script.elements)
             if script_args[self.run]:
                 for arg in script_args[self.run]:
                     self.arguments[arg] = args_to_class[
@@ -147,8 +147,8 @@ class ScriptWindow:
 
     def generate_arguments(self):
         args = []
-        if self.script.arguments[self.run] is not None:
-            for arg in self.script.arguments[self.run]:
+        if self.script.elements[self.run] is not None:
+            for arg in self.script.elements[self.run]:
                 if (
                         not isinstance(self.arguments[arg], Description) and
                         not isinstance(self.arguments[arg], Title) and
@@ -159,19 +159,19 @@ class ScriptWindow:
 
     def get_arg_outputs(self):
         outputs = {}
-        if self.script.arguments[self.run] is not None:
-            for arg in self.script.arguments[self.run]:
+        if self.script.elements[self.run] is not None:
+            for arg in self.script.elements[self.run]:
                 outputs[arg] = self.arguments[arg].output()
         return outputs
 
     def skip_args(self):
         args = []
-        if self.script.arguments[self.run]:
-            for arg in self.script.arguments[self.run]:
+        if self.script.elements[self.run]:
+            for arg in self.script.elements[self.run]:
                 if (
-                        not self.script.arguments[self.run][arg][0] == "DESCRIPTION" and
-                        not self.script.arguments[self.run][arg][0] == "TITLE" and
-                        not self.script.arguments[self.run][arg][0] == "WARNING"
+                        not self.script.elements[self.run][arg][0] == "DESCRIPTION" and
+                        not self.script.elements[self.run][arg][0] == "TITLE" and
+                        not self.script.elements[self.run][arg][0] == "WARNING"
                 ):
                     args.append(arg)
         return args == []
@@ -240,8 +240,8 @@ class ScriptWindow:
                 self.go_to_run_page()
 
     def go_to_run_page(self):
-        if self.script.arguments[self.run] is not None:
-            for arg in self.script.arguments[self.run]:
+        if self.script.elements[self.run] is not None:
+            for arg in self.script.elements[self.run]:
                 if isinstance(self.arguments[arg], WarningDialog):
                     self.arguments[arg].run()
 
@@ -259,8 +259,8 @@ class ScriptWindow:
         pulse_thread.start()
 
     def check_args(self):
-        if self.script.arguments[self.run]:
-            for arg in self.script.arguments[self.run]:
+        if self.script.elements[self.run]:
+            for arg in self.script.elements[self.run]:
                 if (
                         self.arguments[arg].output() is None and
                         not isinstance(self.arguments[arg], Description) and
@@ -274,7 +274,7 @@ class ScriptWindow:
         self.bash_pulse = True
         self.progressbar.set_text("Running Bash")
         args = [
-            "/bin/risi-script-run", "--gui",
+            "/bin/risi_script-run", "--gui",
             "--file", self.file_location,
             "--run", self.run
         ]
