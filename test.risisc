@@ -1,14 +1,13 @@
-#!/bin/risiscript
+#!/bin/risi-script
 metadata:
   name: "Test script"
   id: "io.risi.test"
   description: "Basic test script, used for development. Do not run."
   dependencies: # Just put None for no dependencies
     None
-  root: False
-  one_time_use: True
+  tags:  # Put None for no tags
+    None
   risiscript_version: 1.0
-  reboot: False
 
 run: # Requires remove function
   init:
@@ -59,7 +58,7 @@ remove: # Conflicts with install function
     echo "hello world"
     pwd
     sleep 10
-  checks: # use $varname to access variable
+  check: # use $varname to access variable
     - COMMANDOUTPUTCONTAINS:
       - "echo True"
       - "True"

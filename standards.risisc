@@ -14,6 +14,7 @@ action: # Requires remove function
   show: |  # Only shows if the exit code is 0
     "bash here"
   elements:
+
     entry_var:
       - ENTRY # Type of init var...
       - "Please enter something" # Question for user
@@ -38,5 +39,5 @@ action: # Requires remove function
       - "This is a warning description"
   run: |
     echo "hello world"
-  checks: | # Check if it runs
+  check: | # Check if it runs
     ""

@@ -8,6 +8,7 @@ Script verification
  Based on github repo
 
 Remove gsettings
+ Remove run and installation mode
 
 Redo GUI
 
