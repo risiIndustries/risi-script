@@ -12,9 +12,6 @@ then
 fi
 export PATH
 
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
-
 # User specific aliases and functions
 if [ -d ~/.bashrc.d ]; then
 	for rc in ~/.bashrc.d/*; do
@@ -50,9 +47,12 @@ rs-check() {
       fi
   fi
   if [ "$1" = "package_exists" ]; then
-      if [ ! $(rpm -q $2) ]; then
+      if [ ! $(rpm -q "$2") ]; then
           echo "ERROR:  RPM PACKAGE $2 doesn't exist."
           exit 1
       fi
   fi
 }
+
+RSUSER=$(whoami)
+export RSUSER
