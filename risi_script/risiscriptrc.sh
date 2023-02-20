@@ -47,8 +47,8 @@ rs-check() {
       fi
   fi
   if [ "$1" = "package_exists" ]; then
-      if [ ! $(rpm -q "$2") ]; then
-          echo "ERROR:  RPM PACKAGE $2 doesn't exist."
+      if ! rpm -q "$2"; then
+          echo "ERROR:  PACKAGE $2 doesn't exist."
           exit 1
       fi
   fi

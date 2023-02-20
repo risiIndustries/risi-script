@@ -14,3 +14,6 @@ non_interactive_elements = [
     "DESCRIPTION",
     "WARNING"
 ]
+
+current_version = "2.0"
+supported_versions = ["2.0"]

@@ -1,15 +1,14 @@
-Make Checks bash based
- Implement easy checks via bash
+[X] Make Checks bash based
+[X] Implement easy checks via bash
 
-Available actions, instead of set as flags.
- Make actions based on checks
+[X] Available actions, instead of set as flags.
+[X] Make actions based on checks
 
-Script verification
- Based on github repo
+[ ] Script verification
 
-Remove gsettings
- Remove run and installation mode
+[X] Remove gsettings
+[X] Remove run and installation mode
 
-Redo GUI
+[ ] Redo GUI
 
 

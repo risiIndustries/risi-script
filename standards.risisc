@@ -1,6 +1,6 @@
 #!/bin/risiscript
 metadata:
-  risiscript_version: 2.0
+  rs_version: 2.0
   name: "ScriptName"
   id: "com.example.scriptname"
   description: "Description of what the script does"
@@ -10,6 +10,7 @@ metadata:
 
 
 action: # Requires remove function
+  name: "ActionName"
   show: |  # Only shows if the exit code is 0
     exit 0
   elements:
@@ -36,6 +37,7 @@ action: # Requires remove function
       - "Warning"
       - "This is a warning description"
   run: |
+    echo yo
     echo $entry_var
   check: | # Check if it runs
     echo "checks ran"
