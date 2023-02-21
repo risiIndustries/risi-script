@@ -11,7 +11,7 @@
         <child>
           <object class="GtkStack" id="main_stack">
             <child>
-              <object class="AdwCarousel" id="carousel">
+              <object class="AdwCarousel" id="action_carousel">
                 <child>
                   <object class="AdwPreferencesPage">
                   <property name="vexpand">true</property>
@@ -72,6 +72,34 @@
                     </object>
                   </child>
                 </object>
+                </child>
+                <child>
+                  <object class="GtkStack" id="actionStack">
+                    <child>
+                      <object class="GtkBox" id="loadingPage">
+                        <property name="vexpand">true</property>
+                        <property name="hexpand">true</property>
+                        <property name="valign">center</property>
+                        <property name="halign">center</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkSpinner">
+                            <property name="spinning">true</property>
+                            <property name="width-request">48</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="loadingLabel">
+                            <property name="label" translatable="yes">&lt;b&gt;Loading Actions...&lt;/b&gt;</property>
+<!--                            <property name="markup" translatable="yes"></property>-->
+                            <style>
+                              <class name="title"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
                 </child>
               </object>
             </child>
