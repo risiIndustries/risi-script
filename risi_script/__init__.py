@@ -29,6 +29,12 @@ class Metadata:
         self.rs_version = str(metadata["rs_version"])
         self.flags = metadata["flags"]
 
+        if "short_description" in metadata and metadata["short_description"] is not None and \
+                metadata["short_description"] != "None":
+            self.short_description = str(metadata["short_description"])
+        else:
+            self.short_description = self.description
+
         if "dependencies" in metadata and metadata["dependencies"] is not None and metadata["dependencies"] != "None":
             self.dependencies = metadata["dependencies"]
         else:
@@ -56,6 +62,7 @@ def install_dependencies(dependencies):
                 if package not in installed_dependencies:
                     raise RisiScriptError(f"Failed to install {package}")
                     print("Failed to install " + package)
+
 
 class Bash:
     def __init__(self, bash_code: str, root=False, interactive_elements=None):
@@ -180,6 +187,8 @@ def syntax_check(parsed_code):
         raise RisiScriptError("script name missing from metadata")
     elif "description" not in parsed_code["metadata"].keys():
         raise RisiScriptError("description missing from metadata")
+    elif "short_description" not in parsed_code["metadata"].keys():
+        warnings.warn("short_description missing from metadata. Using description instead")
     elif "rs_version" not in parsed_code["metadata"].keys():
         warnings.warn(f"Warning: rs_version not specified in metadata. Assuming {constants.current_version}")
 
@@ -191,18 +200,6 @@ def syntax_check(parsed_code):
         else:
             raise RisiScriptError(f'This script is written for an unsupported version of risi_script: '
                                   f'{parsed_code["metadata"]["rs_version"]}')
-
-    # Checking for bash and checks options
-    # for item in ["run", "install", "update", "remove"]:
-    #     if item in parsed_code.keys():
-    #         if "bash" not in parsed_code[item]:
-    #             raise RisiScriptError(f"bash code missing from {item} action")
-    #         if "checks" not in parsed_code[item]:
-    #             raise RisiScriptError(f"checks missing from {item} function")
-    #         # Making sure there's no "mode" variable in inputs to prevent errors
-    #         if "init" in parsed_code[item] and "mode" in parsed_code[item]["init"]:
-    #             raise RisiScriptError(f"{item} contains \"mode\" var_name")
-
 
 def indent_newline(string):
     return string.replace("\n", "\n    ")

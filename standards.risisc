@@ -3,9 +3,11 @@ metadata:
   rs_version: 2.0
   name: "ScriptName"
   id: "com.example.scriptname"
+  short_description: "Short description"
   description: "Description of what the script does"
   dependencies: # Just put None for no dependencies
-    None
+    - Firefox
+    - Chromium
   flags: [root, reboot]
 
 

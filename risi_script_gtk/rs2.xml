@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.6"/>
+  <requires lib="libadwaita" version="1.1"/>
+  <object class="AdwApplicationWindow" id="main_window">
+    <property name="title" translatable="yes">risiScript</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <child>
+      <object class="GtkOverlay">
+        <child>
+          <object class="GtkStack" id="main_stack">
+            <child>
+              <object class="AdwCarousel" id="carousel">
+                <child>
+                  <object class="AdwPreferencesPage">
+                  <property name="vexpand">true</property>
+                  <property name="hexpand">true</property>
+                  <child>
+                    <object class="AdwPreferencesGroup" id="metadata">
+                      <property name="title" translatable="yes">risiScript Metadata</property>
+                      <child>
+                        <object class="AdwActionRow" id="name">
+                          <property name="title" translatable="yes">Name</property>
+                          <property name="subtitle" translatable="yes">scriptname</property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="AdwActionRow" id="id">
+                          <property name="title" translatable="yes">ID</property>
+                          <property name="subtitle" translatable="yes">io.risi.id</property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="AdwExpanderRow" id="short_description">
+                          <property name="title" translatable="yes">Description</property>
+                          <property name="subtitle" translatable="yes">this is the short description.</property>
+                          <child>
+                            <object class="GtkLabel" id="description">
+                              <property name="label" translatable="yes">this is the extra long script description.</property>
+                              <property name="wrap">true</property>
+                              <property name="wrap-mode">word</property>
+                              <property name="margin-start">12</property>
+                              <property name="margin-end">12</property>
+                              <property name="margin-top">12</property>
+                              <property name="margin-bottom">12</property>
+                              <style>
+                                <class name="dim-label"/>
+                              </style>
+                            </object>
+                          </child>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="AdwExpanderRow" id="dependencies">
+                          <property name="title" translatable="yes">Dependencies</property>
+                          <property name="subtitle" translatable="yes">Packages this script depends on.</property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="AdwExpanderRow" id="flags">
+                          <property name="title" translatable="yes">Flags</property>
+                          <property name="subtitle" translatable="yes">Flags this script uses.</property>
+                        </object>
+                      </child>
+                      <child>
+                        <object class="AdwActionRow" id="rs_version">
+                          <property name="title" translatable="yes">risiScript Version</property>
+                          <property name="subtitle" translatable="yes">rs_version</property>
+                        </object>
+                      </child>
+                    </object>
+                  </child>
+                </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkButton" id="next_button">
+            <property name="halign">end</property>
+            <property name="icon-name">go-next-symbolic</property>
+            <property name="margin-end">5</property>
+            <property name="valign">center</property>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+            </style>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="GtkButton" id="back_button">
+            <property name="halign">start</property>
+            <property name="icon-name">go-previous-symbolic</property>
+            <property name="margin-start">5</property>
+            <property name="valign">center</property>
+            <property name="visible">false</property>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
