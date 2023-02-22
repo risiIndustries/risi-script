@@ -91,6 +91,9 @@ class Script:
         syntax_check(self.parsed_code)
         self.metadata = Metadata(self.parsed_code["metadata"])
 
+        # This feature is not implemented yet
+        self.trusted = False
+
         self.elements = {}
         for action in self.get_actions():
             self.elements[action] = self.get_elements(action)

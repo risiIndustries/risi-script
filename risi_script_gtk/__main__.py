@@ -39,6 +39,7 @@ class Application(Adw.Application):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(_BUILDER_FILE)
         self.window = self.builder.get_object("main_window")
+        self.actions = []
 
     def do_activate(self):
         self.window.set_application(self)
@@ -70,6 +71,47 @@ class Application(Adw.Application):
             for flag in self.script.metadata.flags:
                 flags_view.add_row(expander_label(flag))
 
+        # Trust level
+        trusted_widget = self.builder.get_object("trusted")
+        if self.script.trusted:
+            trusted_widget.set_subtitle("Trusted")
+            trusted_widget.add_css_class("success")
+            trusted_widget.add_prefix(
+                Gtk.Image.new_from_icon_name("security-high-symbolic")
+            )          
+        else:
+            trusted_widget.set_subtitle("Not Trusted")
+            trusted_widget.add_css_class("error")
+            trusted_widget.add_prefix(
+                Gtk.Image.new_from_icon_name("dialog-warning-symbolic")
+            )
+
+        action_thread = threading.Thread(target=self.load_actions)
+        action_thread.start()
+
+    def load_actions(self):
+        self.actions = self.script.get_available_actions()
+        GLib.idle_add(self.add_actions)
+
+    def add_actions(self):
+        for action in self.actions:
+            self.builder.get_object("actionGroup").add(
+                ScriptActionRow(self.script, action)
+            )
+        self.builder.get_object("actionStack").set_visible_child(
+          self.builder.get_object("actionPage")
+        )
+        
+        
+
+class ScriptActionRow(Adw.ActionRow):
+    def __init__(self, script, action):
+        super().__init__()
+        self.script = script
+        self.action = action
+        self.set_title(script.get_action_display_name(action))
+            
+
 
 def expander_label(text):
     label = Gtk.Label(xalign=0)
@@ -79,6 +121,9 @@ def expander_label(text):
     label.set_margin_top(12)
     label.set_margin_bottom(12)
     return label
+
+
+
 
 
 app = Application(script)

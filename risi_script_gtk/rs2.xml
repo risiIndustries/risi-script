@@ -69,6 +69,12 @@
                           <property name="subtitle" translatable="yes">rs_version</property>
                         </object>
                       </child>
+                      <child>
+                        <object class="AdwActionRow" id="trusted">
+                          <property name="title" translatable="yes">Trusted Level</property>
+                          <property name="subtitle" translatable="yes">Not Trusted</property>
+                        </object>
+                      </child>
                     </object>
                   </child>
                 </object>
@@ -86,18 +92,29 @@
                           <object class="GtkSpinner">
                             <property name="spinning">true</property>
                             <property name="width-request">48</property>
+                            <property name="height-request">48</property>
+                            <property name="margin-bottom">10</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkLabel" id="loadingLabel">
-                            <property name="label" translatable="yes">&lt;b&gt;Loading Actions...&lt;/b&gt;</property>
-<!--                            <property name="markup" translatable="yes"></property>-->
+                            <property name="label" translatable="yes">&lt;big&gt;Loading Actions...&lt;/big&gt;</property>
+		                        <property name="use-markup">True</property>
                             <style>
                               <class name="title"/>
                             </style>
                           </object>
                         </child>
                       </object>
+                    </child>
+                    <child>
+											<object class="AdwPreferencesPage" id="actionPage">
+												<child>
+													<object class="AdwPreferencesGroup" id="actionGroup">
+														<property name="title" translatable="yes">Actions</property>
+													</object>
+												</child>
+											</object>
                     </child>
                   </object>
                 </child>
