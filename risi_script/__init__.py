@@ -11,6 +11,8 @@ from gi.repository import Gio
 newline = "\n"
 indent = "    "
 bashrc = os.path.dirname(os.path.abspath(__file__)) + "/risiscriptrc.sh"
+
+
 class RisiScriptError(Exception):
     """Raised when something is wrong with your risi script code"""
     pass

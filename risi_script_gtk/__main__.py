@@ -73,6 +73,7 @@ class Application(Adw.Application):
 
         # Trust level
         trusted_widget = self.builder.get_object("trusted")
+        print(self.script.trusted)
         if self.script.trusted:
             trusted_widget.set_subtitle("Trusted")
             trusted_widget.add_css_class("success")

@@ -6,8 +6,7 @@ metadata:
   short_description: "Short description"
   description: "Description of what the script does"
   dependencies: # Just put None for no dependencies
-    - Firefox
-    - Chromium
+    - firefox
   flags: [root, reboot]
 
 
