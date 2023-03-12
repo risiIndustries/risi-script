@@ -7,12 +7,11 @@ elements = [
     "DIRECTORY",
     "CHOICE",
     "BOOLEAN",
-    "WARNING",
+    "WARNING"
 ]
 
 non_interactive_elements = [
-    "LABEL",
-    "GROUP",
+    "TITLE",
     "DESCRIPTION",
     "WARNING"
 ]
