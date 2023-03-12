@@ -1,5 +1,5 @@
 elements = [
-    "TITLE",
+    "GROUP",
     "DESCRIPTION",
     "ENTRY",
     "FILE",
@@ -10,7 +10,7 @@ elements = [
 ]
 
 non_interactive_elements = [
-    "TITLE",
+    "GROUP",
     "DESCRIPTION",
     "WARNING"
 ]
