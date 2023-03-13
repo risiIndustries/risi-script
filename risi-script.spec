@@ -24,7 +24,7 @@ Requires:	risi-script
 Gtk client for .risisc (.yml) risi script files
 
 %prep
-%autosetup -n %{name}-1.0
+%autosetup -n %{name}-main
 
 %build
 %install
