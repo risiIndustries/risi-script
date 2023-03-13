@@ -5,7 +5,7 @@ Summary:        risiOS's way of giving GUIs to bash scripts
 
 License:        GPL v3
 URL:            https://github.com/risiOS/risi-script
-Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/main.tar.gz
+Source0:        https://github.com/risiOS/risi-script/archive/refs/heads/1.0.tar.gz
 
 BuildArch:	noarch
 
